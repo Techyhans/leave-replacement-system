@@ -1,0 +1,11 @@
+fastapi==0.68.0
+uvicorn==0.12.2
+SQLAlchemy==1.4.29
+python-jose==3.3.0
+pydantic
+email-validator
+passlib==1.7.4
+mysqlclient==2.1.0
+python-multipart==0.0.5
+bcrypt==3.2.0
+tenacity==8.0.1
