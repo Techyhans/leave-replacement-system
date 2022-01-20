@@ -14,3 +14,4 @@ class User(Base):
     is_active = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
     subjects = relationship('Subject', secondary="usersubject", back_populates='users')
+    rosters = relationship('Roster', back_populates='user')

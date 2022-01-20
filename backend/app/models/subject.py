@@ -9,3 +9,4 @@ class Subject(Base):
     code = Column(String(50), unique=False, nullable=False)
     name = Column(String(50), unique=False, nullable=False)
     users = relationship('User', secondary='usersubject', back_populates='subjects')
+    rosters = relationship('Roster', back_populates='subject')
