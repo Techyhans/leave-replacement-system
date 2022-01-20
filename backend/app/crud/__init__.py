@@ -1,5 +1,6 @@
 from .crud_user import user
 from .crud_subject import subject
+from .crud_roster import roster
 
 # For a new basic set of CRUD operations you could just do
 
