@@ -15,3 +15,4 @@ class User(Base):
     is_superuser = Column(Boolean(), default=False)
     subjects = relationship('Subject', secondary="usersubject", back_populates='users')
     rosters = relationship('Roster', back_populates='user')
+    leaves = relationship('Leave', back_populates='user')
