@@ -1,25 +1,51 @@
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
+import {
+	BrowserRouter,
+	Route,
+	Routes, Navigate
+} from "react-router-dom";
 import './App.css';
+import {UserLayout} from "./layouts/userLayout";
+import {Login} from "./pages/login";
+import {AdminLayout} from "./layouts/adminLayout";
+import {UserPage} from "./pages/admin/user";
+import {SubjectPage} from "./pages/admin/subjects";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<>
+			<BrowserRouter>
+				{
+					<Routes>
+						<Route
+							path="/"
+							element={<Navigate to="/login"/>}
+						/>
+						<Route path="/user" element={<UserLayout/>}>
+							{/*<Route path="/chargers" element={<Chargers/>}/>*/}
+							{/*<Route path="/event-log" element={<EventLog/>}/>*/}
+						</Route>
+						<Route path="/admin" element={<AdminLayout/>}>
+							<Route path="/admin/users" element={<UserPage />}/>
+							<Route path="/admin/subjects" element={<SubjectPage />}/>
+						</Route>
+						<Route
+							element={<Login/>}
+							path="/login"
+						/>
+						<Route
+							path="*"
+							element={
+								<main style={{padding: "1rem"}}>
+									<p>There's nothing here!</p>
+								</main>
+							}
+						/>
+					</Routes>
+				}
+			</BrowserRouter>
+		</>
+	);
 }
 
 export default App;
