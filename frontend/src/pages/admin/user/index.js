@@ -58,7 +58,7 @@ export const UserPage = () => {
 			key: 'action',
 			render: (rowData) => (
 				<Space size="middle">
-					<a>Subjects Assigned</a>
+					{/*<a>Subjects Assigned</a>*/}
 					<a onClick={
 						() => {
 							setSelectedUser(rowData);
