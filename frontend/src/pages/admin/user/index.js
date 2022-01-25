@@ -327,7 +327,7 @@ export const UserPage = () => {
 							{
 								subjectList && (
 									subjectList.map((subjectDetails) => (
-										<Option value={parseInt(subjectDetails.code)}>{ subjectDetails.name }</Option>
+										<Option value={parseInt(subjectDetails.id)}>{ subjectDetails.name }</Option>
 									))
 								)
 							}
