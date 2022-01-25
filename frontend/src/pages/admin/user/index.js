@@ -65,7 +65,13 @@ export const UserPage = () => {
 							setIsEditModalVisible(true)
 						}
 					}>Edit</a>
-					<a>Delete</a>
+					{/*<a onClick={*/}
+					{/*		() => {*/}
+					{/*			setSelectedUser(rowData);*/}
+					{/*			setIsDeleteModalVisible(true)*/}
+					{/*		}*/}
+					{/*	}*/}
+					{/*>Delete</a>*/}
 				</Space>
 			),
 		},
@@ -457,7 +463,7 @@ export const UserPage = () => {
 			</Modal>
 
 			<Modal title="Delete" visible={isDeleteModalVisible} onOk={handleDeleteOk} onCancel={handleDeleteCancel}>
-				<p>Are you sure want to delete ?</p>
+				<p>Are you sure want to delete {selectedUser.full_name}?</p>
 			</Modal>
 		</>
 	)
