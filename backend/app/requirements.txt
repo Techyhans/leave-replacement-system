@@ -9,3 +9,4 @@ mysqlclient==2.1.0
 python-multipart==0.0.5
 bcrypt==3.2.0
 tenacity==8.0.1
+scikit-fuzzy==0.4.2
