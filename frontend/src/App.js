@@ -10,6 +10,7 @@ import {Login} from "./pages/login";
 import {AdminLayout} from "./layouts/adminLayout";
 import {UserPage} from "./pages/admin/user";
 import {SubjectPage} from "./pages/admin/subjects";
+import {UserDashboardPage} from "./pages/user/dashboard";
 
 function App() {
 	return (
@@ -22,8 +23,7 @@ function App() {
 							element={<Navigate to="/login"/>}
 						/>
 						<Route path="/user" element={<UserLayout/>}>
-							{/*<Route path="/chargers" element={<Chargers/>}/>*/}
-							{/*<Route path="/event-log" element={<EventLog/>}/>*/}
+							<Route path="/user/dashboard" element={<UserDashboardPage />}/>
 						</Route>
 						<Route path="/admin" element={<AdminLayout/>}>
 							<Route path="/admin/users" element={<UserPage />}/>

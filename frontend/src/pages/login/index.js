@@ -18,8 +18,8 @@ export const Login = () => {
 			body: formData
 		}).then(response => response.json())
 			.then(data => {
-				console.log(data);
 				localStorage.setItem('token', data.access_token);
+				localStorage.setItem('is_admin', values.username === "admin@example.com" ? true : false);
 				navigate('/admin/users')
 			})
 			.catch(error => console.error('Error:', error));
