@@ -55,11 +55,11 @@ export const SubjectPage = () => {
 	};
 
 	const handleCreateOk = () => {
-		setIsEditModalVisible(false);
+		setIsCreateModalVisible(false);
 	};
 
 	const handleCreateCancel = () => {
-		setIsEditModalVisible(false);
+		setIsCreateModalVisible(false);
 	};
 
 	const showEditModal = () => {
