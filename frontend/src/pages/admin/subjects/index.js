@@ -28,26 +28,26 @@ export const SubjectPage = () => {
 			dataIndex: 'code',
 			key: 'code',
 		},
-		{
-			title: 'Action',
-			key: 'action',
-			render: (rowData) => (
-				<Space size="middle">
-					<a onClick={
-						() => {
-							setSelectedSubject(rowData);
-							setIsEditModalVisible(true);
-						}
-					}>Edit</a>
-					<a onClick={
-						() => {
-							setSelectedSubject(rowData);
-							setIsDeleteModalVisible(true);
-						}
-					}>Delete</a>
-				</Space>
-			),
-		},
+		// {
+		// 	title: 'Action',
+		// 	key: 'action',
+		// 	render: (rowData) => (
+		// 		<Space size="middle">
+		// 			<a onClick={
+		// 				() => {
+		// 					setSelectedSubject(rowData);
+		// 					setIsEditModalVisible(true);
+		// 				}
+		// 			}>Edit</a>
+		// 			<a onClick={
+		// 				() => {
+		// 					setSelectedSubject(rowData);
+		// 					setIsDeleteModalVisible(true);
+		// 				}
+		// 			}>Delete</a>
+		// 		</Space>
+		// 	),
+		// },
 	];
 
 	const showCreateModal = () => {
