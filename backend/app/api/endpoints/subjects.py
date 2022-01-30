@@ -24,36 +24,18 @@ def read_subjects(
     return subjects
 
 
-@router.post("/", response_model=schemas.Subject)
-def create_subject(
-        *,
-        db: Session = Depends(deps.get_db),
-        subject_in: schemas.SubjectCreate,
-        current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
-    """
-    Create new subject.
-    """
-    item = crud.subject.create(db=db, obj_in=subject_in)
-    return item
-
-
-@router.put("/{id}", response_model=schemas.Subject)
-def update_subject(
-        *,
-        db: Session = Depends(deps.get_db),
-        id: int,
-        subject_in: schemas.SubjectUpdate,
-        current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
-    """
-    Update an subject.
-    """
-    subject = crud.subject.get(db=db, id=id)
-    if not subject:
-        raise HTTPException(status_code=404, detail="Subject not found")
-    subject = crud.subject.update(db=db, db_obj=subject, obj_in=subject_in)
-    return subject
+# @router.post("/", response_model=schemas.Subject)
+# def create_subject(
+#         *,
+#         db: Session = Depends(deps.get_db),
+#         subject_in: schemas.SubjectCreate,
+#         current_user: models.User = Depends(deps.get_current_active_superuser),
+# ) -> Any:
+#     """
+#     Create new subject.
+#     """
+#     item = crud.subject.create(db=db, obj_in=subject_in)
+#     return item
 
 
 @router.get("/{id}", response_model=schemas.Subject)
@@ -69,21 +51,4 @@ def read_subject(
     subject = crud.subject.get(db=db, id=id)
     if not subject:
         raise HTTPException(status_code=404, detail="Subject not found")
-    return subject
-
-
-@router.delete("/{id}", response_model=schemas.Subject)
-def delete_subject(
-        *,
-        db: Session = Depends(deps.get_db),
-        id: int,
-        current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
-    """
-    Delete an subject.
-    """
-    subject = crud.subject.get(db=db, id=id)
-    if not subject:
-        raise HTTPException(status_code=404, detail="Subject not found")
-    subject = crud.subject.remove(db=db, id=id)
     return subject
