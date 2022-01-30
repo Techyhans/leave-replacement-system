@@ -2,6 +2,7 @@ from typing import Optional, List
 
 from pydantic import BaseModel, EmailStr
 from app.schemas.subject import Subject
+from app.schemas.roster import Roster
 
 
 # Shared properties
@@ -30,6 +31,7 @@ class UserUpdate(UserBase):
 class UserInDBBase(UserBase):
     id: Optional[int] = None
     subjects: List[Subject] = []
+    rosters: List[Roster] = []
 
     class Config:
         orm_mode = True

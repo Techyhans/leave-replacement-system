@@ -1,8 +1,6 @@
 from typing import Optional
 
 from pydantic import BaseModel
-from app.schemas.user import User
-from app.schemas.subject import Subject
 
 class RosterBase(BaseModel):
     day: Optional[str] = None
@@ -28,8 +26,8 @@ class RosterUpdate(RosterBase):
 
 class RosterInDBBase(RosterBase):
     id: Optional[int] = None
-    user: User = None
-    subject: Subject = None
+    user_id: int = None
+    subject_id: int = None
 
     class Config:
         orm_mode = True

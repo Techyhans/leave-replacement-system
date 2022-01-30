@@ -38,7 +38,14 @@ def init_db(db: Session) -> None:
         crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1225", name="Moral Education"))
         crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1249", name="History"))
         crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1449", name="Mathematics"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1511", name="Science"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="3472", name="Additional Mathematics"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="4531", name="Physics"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="4541", name="Chemistry"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="4551", name="Biology"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="2205", name="Literature in English"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="2215", name="Malay Literature"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="3766", name="Business"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="3767", name="Economics"))
 
     teacher1 = schemas.UserCreate(full_name="Amar", gender="male", email="amar@example.com",
                                   password="amar", is_superuser=False, subjects=[3, 4])
