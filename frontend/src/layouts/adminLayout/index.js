@@ -1,4 +1,4 @@
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import {Layout, Menu, Breadcrumb} from 'antd';
 import {
 	DesktopOutlined,
@@ -15,6 +15,7 @@ const {SubMenu} = Menu;
 export const AdminLayout = () => {
 
 	const [collapsed, setCollapsed] = useState(false);
+	const navigate = useNavigate()
 
 	return (
 		<Layout style={{minHeight: '100vh'}}>
@@ -30,10 +31,10 @@ export const AdminLayout = () => {
 						Option 2
 					</Menu.Item>
 					<SubMenu key="sub1" icon={<UserOutlined/>} title="Users">
-						<Menu.Item key="3">View</Menu.Item>
+						<Menu.Item key="3" onClick={() => navigate("/admin/users")}>View</Menu.Item>
 					</SubMenu>
 					<SubMenu key="sub2" icon={<TeamOutlined/>} title="Subjects">
-						<Menu.Item key="6">View</Menu.Item>
+						<Menu.Item key="6" onClick={() => navigate("/admin/subjects")}>View</Menu.Item>
 					</SubMenu>
 					<Menu.Item key="9" icon={<FileOutlined/>}>
 						Files
