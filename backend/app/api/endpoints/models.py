@@ -9,13 +9,23 @@ from app.api.services import Fuzzy
 
 router = APIRouter()
 
-weekday_mapping = {
-    'monday': 1,
-    'tuesday': 2,
-    'wednesday': 3,
-    'thursday': 4,
-    'friday': 5
+subject_skill_mapping = {
+    'English Language': 1,
+    'Literature in English': 2,
+    'History': 3,
+    'Malay Language': 4,
+    'Malay Literature': 5,
+    'Islamic Studies': 6,
+    'Moral Education': 7,
+    'Mathematics': 8,
+    'Additional Mathematics': 9,
+    'Physics': 10,
+    'Chemistry': 11,
+    'Biology': 12,
+    'Business': 13,
+    'Economics': 14
 }
+
 
 @router.post("/predict", response_model=List[schemas.ModelOutput])
 def predict(
@@ -33,11 +43,9 @@ def predict(
         teacher_skills = teacher.subjects
         teacher_scores = []
         for skill in teacher_skills:
-            print(skill.name)
             fuzzy = Fuzzy()
-            score = fuzzy.predict(subject.id, skill.id)
+            score = fuzzy.predict(subject_skill_mapping[subject.name], subject_skill_mapping[skill.name])
             teacher_scores.append(score)
-            print(score)
         max_score = max(teacher_scores)
         max_score_index = teacher_scores.index(max_score)
         model_output = schemas.ModelOutput

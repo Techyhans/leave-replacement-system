@@ -38,24 +38,6 @@ def create_roster(
     return roster
 
 
-@router.put("/{id}", response_model=schemas.Roster)
-def update_roster(
-        *,
-        db: Session = Depends(deps.get_db),
-        id: int,
-        roster_in: schemas.RosterUpdate,
-        current_user: models.User = Depends(deps.get_current_active_superuser),
-) -> Any:
-    """
-    Update an roster.
-    """
-    roster = crud.roster.get(db=db, id=id)
-    if not roster:
-        raise HTTPException(status_code=404, detail="Roster not found")
-    roster = crud.roster.update(db=db, db_obj=roster, obj_in=roster_in)
-    return roster
-
-
 @router.get("/{id}", response_model=schemas.Roster)
 def read_roster(
         *,
