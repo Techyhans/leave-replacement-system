@@ -24,20 +24,6 @@ def read_subjects(
     return subjects
 
 
-# @router.post("/", response_model=schemas.Subject)
-# def create_subject(
-#         *,
-#         db: Session = Depends(deps.get_db),
-#         subject_in: schemas.SubjectCreate,
-#         current_user: models.User = Depends(deps.get_current_active_superuser),
-# ) -> Any:
-#     """
-#     Create new subject.
-#     """
-#     item = crud.subject.create(db=db, obj_in=subject_in)
-#     return item
-
-
 @router.get("/{id}", response_model=schemas.Subject)
 def read_subject(
         *,
