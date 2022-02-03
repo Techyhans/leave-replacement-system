@@ -1,6 +1,15 @@
+from enum import Enum
 from typing import Optional
 
 from pydantic import BaseModel
+
+
+class DayName(str, Enum):
+    monday = "monday"
+    tuesday = "tuesday"
+    wednesday = "wednesday"
+    thursday = "thursday"
+    friday = "friday"
 
 
 class RosterBase(BaseModel):
@@ -10,7 +19,7 @@ class RosterBase(BaseModel):
 
 
 class RosterCreate(RosterBase):
-    day: str
+    day: DayName
     start_hour: int
     end_hour: int
     user_id: int
@@ -18,7 +27,7 @@ class RosterCreate(RosterBase):
 
 
 class RosterUpdate(RosterBase):
-    day: str
+    day: DayName
     start_hour: int
     end_hour: int
     user_id: int
