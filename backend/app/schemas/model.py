@@ -4,7 +4,7 @@ from schemas.user import User
 
 
 class ModelBase(BaseModel):
-    subject_id: int
+    roster_id: int
 
 
 class ModelOutput(BaseModel):
