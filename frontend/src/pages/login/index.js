@@ -33,6 +33,7 @@ export const Login = () => {
 
 	return (
 		<div className={"center"}>
+
 			<Form
 				name="basic"
 				labelCol={{span: 2}}
@@ -41,6 +42,13 @@ export const Login = () => {
 				onFinishFailed={onFinishFailed}
 				autoComplete="off"
 			>
+				<center>
+					<img src={require("../../assets/logo.jpeg")} style={{ width: "10vw" }} alt={"logo"}/>
+					<h1>Sekolah Kebangsaan Mantin</h1>
+				</center>
+
+				<br />
+				<br />
 				<Form.Item
 					label="Username"
 					name="username"
@@ -57,11 +65,11 @@ export const Login = () => {
 					<Input.Password/>
 				</Form.Item>
 
-				<Form.Item wrapperCol={{offset: 8, span: 16}}>
+				<center>
 					<Button type="primary" htmlType="submit">
-						Submit
+						Login
 					</Button>
-				</Form.Item>
+				</center>
 			</Form>
 		</div>
 	)
