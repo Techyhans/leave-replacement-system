@@ -1,64 +1,142 @@
-import {Table} from "antd";
+import {Button, DatePicker, Form, Input, Select, Table} from "antd";
+import {useEffect, useState} from "react";
+import Modal from "antd/es/modal/Modal";
 
 export const UserLeavePage = () => {
 
-	// [
-	// 	{
-	// 		"date": "2022-02-06",
-	// 		"description": "string",
-	// 		"approved": true,
-	// 		"id": 0,
-	// 		"user": {
-	// 			"email": "user@example.com",
-	// 			"is_active": true,
-	// 			"is_superuser": false,
-	// 			"full_name": "string",
-	// 			"address": "string",
-	// 			"gender": "string",
-	// 			"id": 0,
-	// 			"subjects": [],
-	// 			"rosters": []
-	// 		}
-	// 	}
-	// ]
+	const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+
+	const showCreateModal = () => {
+		setIsCreateModalVisible(true);
+	};
+
+	const handleCreateOk = () => {
+		setIsCreateModalVisible(false);
+	};
+
+	const getLeaveList = () => {
+		fetch('/api/leaves/me', {
+			method: 'GET',
+			headers: {
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
+			}
+
+		})
+			.then(res => res.json())
+			.then(data => {
+				console.log(data)
+			})
+			.catch(err => console.log(err));
+	}
+
+	const onCreateFinish = (values) => {
+		values.date = values.date.format('YYYY-MM-DD');
+		values.approved = false;
+
+		fetch('api/leave', {
+			method: 'POST',
+			body: values
+		}).then(response => response.json())
+			.then(data => {
+				handleCreateOk();
+			})
+			.catch(error => console.error('Error:', error));
+
+	};
+
+	const onCreateFailed = (error) => {
+		console.log(error);
+	};
+
+	const handleCreateCancel = () => {
+		setIsCreateModalVisible(false);
+	};
+
+	useEffect(() => {
+		getLeaveList()
+	}, [])
+
 
 	const dataSource = [
 		{
 			key: '1',
-			id: '',
+			id: '1',
 			date: 'Mike',
 			description: 32,
-			approved: '10 Downing Street',
+			approved: true,
 		},
 		{
 			key: '2',
-			name: 'John',
-			age: 42,
-			address: '10 Downing Street',
+			id: '2',
+			date: 'Mike 2',
+			description: 32,
+			approved: false,
 		},
 	];
 
 	const columns = [
 		{
-			title: 'Name',
-			dataIndex: 'name',
-			key: 'name',
+			title: 'Date',
+			dataIndex: 'date',
+			key: 'date',
 		},
 		{
-			title: 'Age',
-			dataIndex: 'age',
-			key: 'age',
+			title: 'Description',
+			dataIndex: 'description',
+			key: 'description',
 		},
 		{
-			title: 'Address',
-			dataIndex: 'address',
-			key: 'address',
+			title: 'Approved',
+			dataIndex: 'approved',
+			key: 'approved',
+			render: (text, record) => (
+				<span>
+					{record.approved ? 'Yes' : 'No'}
+				</span>
+			),
 		},
 	];
 
 	return (
 		<>
+			<Button type="primary" htmlType="button" onClick={showCreateModal}>
+				Apply Leave
+			</Button>
+
 			<Table dataSource={dataSource} columns={columns} />
+
+			<Modal title="Create" visible={isCreateModalVisible} onOk={handleCreateOk} onCancel={handleCreateCancel}>
+				<Form
+					name="basic"
+					labelCol={{span: 6}}
+					wrapperCol={{span: 18}}
+					onFinish={onCreateFinish}
+					onFinishFailed={onCreateFailed}
+					autoComplete="off"
+				>
+					<Form.Item
+						label="date"
+						name="date"
+						rules={[{required: true, message: 'Date is required'}]}
+					>
+						<DatePicker />
+					</Form.Item>
+
+					<Form.Item
+						label="description"
+						name="description"
+						rules={[{required: true, message: 'Description is required'}]}
+					>
+						<Input />
+					</Form.Item>
+
+					<Form.Item wrapperCol={{offset: 6, span: 18}}>
+						<Button type="primary" htmlType="submit">
+							Apply
+						</Button>
+					</Form.Item>
+				</Form>
+			</Modal>
 		</>
 	);
 }
