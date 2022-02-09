@@ -11,6 +11,7 @@ import {AdminLayout} from "./layouts/adminLayout";
 import {UserPage} from "./pages/admin/user";
 import {SubjectPage} from "./pages/admin/subjects";
 import {UserDashboardPage} from "./pages/user/dashboard";
+import {UserLeavePage} from "./pages/user/leaves";
 
 function App() {
 	return (
@@ -24,6 +25,7 @@ function App() {
 						/>
 						<Route path="/user" element={<UserLayout/>}>
 							<Route path="/user/dashboard" element={<UserDashboardPage />}/>
+							<Route path="/user/leave" element={<UserLeavePage />}/>
 						</Route>
 						<Route path="/admin" element={<AdminLayout/>}>
 							<Route path="/admin/users" element={<UserPage />}/>

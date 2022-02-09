@@ -176,9 +176,9 @@ export const SubjectPage = () => {
 
 	return (
 		<>
-			<Button type="primary" htmlType="button" onClick={showCreateModal}>
-				Create Subject
-			</Button>
+			{/*<Button type="primary" htmlType="button" onClick={showCreateModal}>*/}
+			{/*	Create Subject*/}
+			{/*</Button>*/}
 
 			<Table columns={columns} dataSource={subjectList} />
 
