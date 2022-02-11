@@ -33,11 +33,12 @@ export const UserLeavePage = () => {
 		values.date = values.date.format('YYYY-MM-DD');
 		values.approved = false;
 
-		fetch('api/leave', {
+		fetch('/api/leaves', {
 			method: 'POST',
 			body: values
 		}).then(response => response.json())
 			.then(data => {
+				console.log(data);
 				handleCreateOk();
 			})
 			.catch(error => console.error('Error:', error));

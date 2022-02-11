@@ -25,7 +25,7 @@ function App() {
 						/>
 						<Route path="/user" element={<UserLayout/>}>
 							<Route path="/user/dashboard" element={<UserDashboardPage />}/>
-							<Route path="/user/leave" element={<UserLeavePage />}/>
+							<Route path="/user/leaves" element={<UserLeavePage />}/>
 						</Route>
 						<Route path="/admin" element={<AdminLayout/>}>
 							<Route path="/admin/users" element={<UserPage />}/>

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from "moment";
 
@@ -6,11 +6,31 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import { format, addDays, subDays } from "date-fns";
 import RRule from "rrule";
+import {generate_recurrent_date} from "../../../shared";
 
 const localizer = momentLocalizer(moment);
 
 export const UserDashboardPage = () => {
     const [events, setEvents] = useState([]);
+
+    useEffect(() => {
+        fetch('/api/rosters/?skip=0&limit=100', {
+            headers: {
+                Authorization: 'Bearer ' + localStorage.getItem('token'),
+                method: 'GET'
+            },
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data)
+            })
+            .catch(err => console.log(err));
+    }, [])
+
+    useEffect(() => {
+        setEvents(generate_recurrent_date(new Date(), moment().add(50, 'days').toDate(), 'subject title'))
+    }, [])
+
 
     // const sub_1_start_date = new RRule({
     //     freq: RRule.WEEKLY,
@@ -42,7 +62,7 @@ export const UserDashboardPage = () => {
           localizer={localizer}
           defaultDate={new Date()}
           defaultView="month"
-          // events={events}
+          events={events}
           style={{ height: "100vh" }}
           // startAccessor={start => {
           //   var s = toNewDate(start.dates[0].days.startDate);

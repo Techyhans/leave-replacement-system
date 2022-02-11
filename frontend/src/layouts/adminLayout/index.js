@@ -24,21 +24,13 @@ export const AdminLayout = () => {
 					<img src={"https://upload.wikimedia.org/wikipedia/commons/8/8d/Google_logo_%282010-2013%29.svg"} width={180} alt="logo"/>
 				</div>
 				<Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-					<Menu.Item key="1" icon={<PieChartOutlined/>}>
-						Option 1
-					</Menu.Item>
-					<Menu.Item key="2" icon={<DesktopOutlined/>}>
-						Option 2
-					</Menu.Item>
-					<SubMenu key="sub1" icon={<UserOutlined/>} title="Users">
-						<Menu.Item key="3" onClick={() => navigate("/admin/users")}>View</Menu.Item>
+					<SubMenu key="sub1" icon={<UserOutlined/>} title="User">
+						<Menu.Item key="1" onClick={() => navigate("/admin/users")}>View</Menu.Item>
 					</SubMenu>
-					<SubMenu key="sub2" icon={<TeamOutlined/>} title="Subjects">
-						<Menu.Item key="6" onClick={() => navigate("/admin/subjects")}>View</Menu.Item>
+					<SubMenu key="sub2" icon={<UserOutlined/>} title="Subjects">
+						<Menu.Item key="2" onClick={() => navigate("/admin/subjects")}>View</Menu.Item>
 					</SubMenu>
-					<Menu.Item key="9" icon={<FileOutlined/>}>
-						Files
-					</Menu.Item>
+					<Menu.Item key="99" onClick={() => navigate("/login")}>Log Out</Menu.Item>
 				</Menu>
 			</Sider>
 			<Layout className="site-layout">

@@ -22,7 +22,11 @@ export const Login = () => {
 			.then(data => {
 				localStorage.setItem('token', data.access_token);
 				localStorage.setItem('is_admin', values.username === "admin@example.com" ? true : false);
-				navigate('/admin/users')
+				if (values.username === "admin@example.com") {
+					navigate('/admin/users')
+				} else {
+					navigate('/user/dashboard')
+				}
 			})
 			.catch(error => console.error('Error:', error));
 	};
