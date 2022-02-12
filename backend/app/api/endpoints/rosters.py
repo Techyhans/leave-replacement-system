@@ -38,6 +38,19 @@ def create_roster(
     return roster
 
 
+@router.put("/me", response_model=List[schemas.Roster])
+def get_roster_me(
+        *,
+        db: Session = Depends(deps.get_db),
+        current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get own roster.
+    """
+    rosters = crud.roster.get_multi_by_owner(db, owner_id=current_user.id)
+    return rosters
+
+
 @router.get("/{id}", response_model=schemas.Roster)
 def read_roster(
         *,
