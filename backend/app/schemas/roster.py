@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
+from app.schemas.subject import Subject
+
 
 class DayName(str, Enum):
     monday = "monday"
@@ -37,7 +39,7 @@ class RosterUpdate(RosterBase):
 class RosterInDBBase(RosterBase):
     id: Optional[int] = None
     user_id: int = None
-    subject_id: int = None
+    subject: Subject = None
 
     class Config:
         orm_mode = True
