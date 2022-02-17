@@ -31,7 +31,6 @@ export const UserPage = () => {
 			let dt = await generate_recurrent_date(start_date, end_date, values.rosters[i].subject.name)
 			eventList = eventList.concat(dt)
 		}
-		console.log("OUT", eventList)
 		setEvents(eventList)
 	}
 
