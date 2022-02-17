@@ -3,11 +3,12 @@ import {useEffect, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import {momentLocalizer} from "react-big-calendar";
 import moment from "moment";
+import axios from "axios";
 
 export const UserLeavePage = () => {
 
 	const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
-
+	const [dataSource, setDataSource] = useState([]);
 	const showCreateModal = () => {
 		setIsCreateModalVisible(true);
 	};
@@ -26,7 +27,7 @@ export const UserLeavePage = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				console.log(data)
+				setDataSource(data)
 			})
 			.catch(err => console.log(err));
 	}
@@ -35,16 +36,15 @@ export const UserLeavePage = () => {
 		values.date = values.date.format('YYYY-MM-DD');
 		values.approved = false;
 
-		fetch('/api/leaves', {
-			method: 'POST',
-			body: values
-		}).then(response => response.json())
-			.then(data => {
-				console.log(data);
-				handleCreateOk();
+		axios
+			.post('/api/leaves/', values, {
+				headers: {
+					Authorization: 'Bearer ' + localStorage.getItem('token'),
+				}
+			}).then(resp => {
+				getLeaveList();
 			})
-			.catch(error => console.error('Error:', error));
-
+			.catch(err => console.log(err));
 	};
 
 	const onCreateFailed = (error) => {
@@ -59,25 +59,12 @@ export const UserLeavePage = () => {
 		getLeaveList()
 	}, [])
 
-
-	const dataSource = [
-		{
-			key: '1',
-			id: '1',
-			date: 'Mike',
-			description: 32,
-			approved: true,
-		},
-		{
-			key: '2',
-			id: '2',
-			date: 'Mike 2',
-			description: 32,
-			approved: false,
-		},
-	];
-
 	const columns = [
+		{
+			title: 'Id',
+			dataIndex: 'id',
+			key: 'id',
+		},
 		{
 			title: 'Date',
 			dataIndex: 'date',
