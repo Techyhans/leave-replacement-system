@@ -9,7 +9,6 @@ export const Login = () => {
 	const navigate = useNavigate()
 
 	const onFinish = (values) => {
-		console.log('Success:', values);
 
 		const formData = new FormData();
 		formData.append('username', values.username);
@@ -18,16 +17,22 @@ export const Login = () => {
 		fetch('api/login/access-token', {
 			method: 'POST',
 			body: formData
-		}).then(response => response.json())
-			.then(data => {
-				localStorage.setItem('token', data.access_token);
-				localStorage.setItem('is_admin', values.username === "admin@example.com" ? true : false);
-				if (values.username === "admin@example.com") {
-					navigate('/admin/users')
-				} else {
-					navigate('/user/dashboard')
-				}
-			})
+		}).then(response => {
+			if (response.status === 400) {
+				alert("invalid credentials")
+			} else {
+				response.json().then((data) => {
+					console.log("TOKEN", data)
+					localStorage.setItem('token', data.access_token);
+					localStorage.setItem('is_admin', values.username === "admin@example.com" ? true : false);
+					if (values.username === "admin@example.com") {
+						navigate('/admin/users')
+					} else {
+						navigate('/user/dashboard')
+					}
+				})
+			}
+		})
 			.catch(error => console.error('Error:', error));
 	};
 

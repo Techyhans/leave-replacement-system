@@ -6,15 +6,27 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import { format, addDays, subDays } from "date-fns";
 import RRule from "rrule";
-import {generate_recurrent_date} from "../../../shared";
+import {find_nearest_date_from_day, generate_recurrent_date} from "../../../shared";
 
 const localizer = momentLocalizer(moment);
 
 export const UserDashboardPage = () => {
     const [events, setEvents] = useState([]);
 
+    async function viewRosterModule(values) {
+        let eventList = []
+        for (let i = 0; i < values.rosters.length; i++) {
+            console.log(values.rosters[i])
+            let start_date = find_nearest_date_from_day(values.rosters[i].day, values.rosters[i].start_hour)
+            let end_date = find_nearest_date_from_day(values.rosters[i].day, values.rosters[i].end_hour)
+            let dt = await generate_recurrent_date(start_date, end_date, values.rosters[i].subject.name)
+            eventList = eventList.concat(dt)
+        }
+        setEvents(eventList)
+    }
+
     useEffect(() => {
-        fetch('/api/rosters/?skip=0&limit=100', {
+        fetch('/api/rosters/me', {
             headers: {
                 Authorization: 'Bearer ' + localStorage.getItem('token'),
                 method: 'GET'
@@ -22,13 +34,13 @@ export const UserDashboardPage = () => {
         })
             .then(res => res.json())
             .then(data => {
-                console.log(data)
+                console.log("roster data", data)
             })
             .catch(err => console.log(err));
     }, [])
 
     useEffect(() => {
-        setEvents(generate_recurrent_date(new Date(), moment().add(50, 'days').toDate(), 'subject title'))
+        // setEvents(generate_recurrent_date(new Date(), moment().add(50, 'days').toDate(), 'subject title'))
     }, [])
 
 
