@@ -2,7 +2,7 @@ import RRule from "rrule";
 import moment from "moment";
 
 
-const find_nearest_date_from_day = (dayOfWeek) => {
+export const find_nearest_date_from_day = (dayOfWeek, start_hour) => {
 	//  SUN = 0
 	//  MON = 1
 	//  TUE = 2
@@ -10,7 +10,32 @@ const find_nearest_date_from_day = (dayOfWeek) => {
 	//  THU = 4
 	//  FRI = 5
 	//  SAT = 6
-	return moment().isoWeekday(-7+((1+1)*7)+dayOfWeek).toDate()
+	let dayIndex = 0
+	if (dayOfWeek === "monday") {
+		dayIndex = 1
+	}
+	if (dayOfWeek === "tuesday") {
+		dayIndex = 2
+	}
+	if (dayOfWeek === "wednesday") {
+		dayIndex = 3
+	}
+	if (dayOfWeek === "thursday") {
+		dayIndex = 4
+	}
+	if (dayOfWeek === "friday") {
+		dayIndex = 5
+	}
+	if (dayOfWeek === "saturday") {
+		dayIndex = 6
+	}
+	if (dayOfWeek === "sunday") {
+		dayIndex = 0
+	}
+
+	let dt1 = moment().isoWeekday(-7+((1+1)*7)+dayIndex).toDate()
+	dt1.setHours(start_hour,0,0)
+	return dt1;
 }
 
 export const generate_recurrent_date = (start_datetime = null, end_datetime = null, title = "title") => {

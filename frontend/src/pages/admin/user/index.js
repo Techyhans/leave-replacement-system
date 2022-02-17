@@ -1,11 +1,16 @@
 import {Table, Tag, Space, Form, Input, Button} from 'antd';
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import { Select } from 'antd';
+import {Calendar, momentLocalizer} from "react-big-calendar";
+import moment from "moment";
+import {find_nearest_date_from_day, generate_recurrent_date} from "../../../shared";
 
 const { Option } = Select
 
 export const UserPage = () => {
+
+	const localizer = momentLocalizer(moment);
 
 	const [userList, setUserList] = useState([]);
 	const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -13,6 +18,22 @@ export const UserPage = () => {
 	const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 	const [selectedUser, setSelectedUser] = useState({});
 	const [subjectList, setSubjectList] = useState([]);
+	const [isRosterModalVisible, setIsRosterModalVisible] = useState(false);
+
+	const [events, setEvents] = useState([]);
+
+	async function viewRosterModule(values) {
+		let eventList = []
+		for (let i = 0; i < values.rosters.length; i++) {
+			console.log(values.rosters[i])
+			let start_date = find_nearest_date_from_day(values.rosters[i].day, values.rosters[i].start_hour)
+			let end_date = find_nearest_date_from_day(values.rosters[i].day, values.rosters[i].end_hour)
+			let dt = await generate_recurrent_date(start_date, end_date, values.rosters[i].subject.name)
+			eventList = eventList.concat(dt)
+		}
+		console.log("OUT", eventList)
+		setEvents(eventList)
+	}
 
 	const columns = [
 		{
@@ -65,13 +86,12 @@ export const UserPage = () => {
 							setIsEditModalVisible(true)
 						}
 					}>Edit</a>
-					{/*<a onClick={*/}
-					{/*		() => {*/}
-					{/*			setSelectedUser(rowData);*/}
-					{/*			setIsDeleteModalVisible(true)*/}
-					{/*		}*/}
-					{/*	}*/}
-					{/*>Delete</a>*/}
+					<a onClick={
+						() => {
+							setIsRosterModalVisible(true)
+							viewRosterModule(rowData)
+						}
+					}>View Roster</a>
 				</Space>
 			),
 		},
@@ -84,6 +104,7 @@ export const UserPage = () => {
 	const handleCreateOk = () => {
 		setIsCreateModalVisible(false);
 	};
+
 
 	const handleCreateCancel = () => {
 		setIsCreateModalVisible(false);
@@ -104,6 +125,14 @@ export const UserPage = () => {
 	const showDeleteModal = () => {
 		setIsDeleteModalVisible(true);
 	};
+
+	const handleRosterOk = () => {
+		setIsRosterModalVisible(false);
+	}
+
+	const handleRosterCancel = () => {
+		setIsRosterModalVisible(false);
+	}
 
 	const handleDeleteOk = () => {
 		fetch('/api/users/' + selectedUser.id, {
@@ -464,6 +493,24 @@ export const UserPage = () => {
 
 			<Modal title="Delete" visible={isDeleteModalVisible} onOk={handleDeleteOk} onCancel={handleDeleteCancel}>
 				<p>Are you sure want to delete {selectedUser.full_name}?</p>
+			</Modal>
+
+			<Modal title="View Roster" visible={isRosterModalVisible} onOk={handleRosterOk} onCancel={handleRosterCancel} width={2000}>
+				<Calendar
+					localizer={localizer}
+					defaultDate={new Date()}
+					defaultView="month"
+					events={events}
+					style={{ height: "100vh" }}
+					// startAccessor={start => {
+					//   var s = toNewDate(start.dates[0].days.startDate);
+					//   return subDays(s, start.dates[0].numPreDays);
+					// }}
+					// endAccessor={end => {
+					//   var e = toNewDate(end.dates[0].days.endDate);
+					//   return addDays(e, end.dates[0].numPostDays);
+					// }}
+				/>
 			</Modal>
 		</>
 	)
