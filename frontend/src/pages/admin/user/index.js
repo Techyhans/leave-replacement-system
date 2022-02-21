@@ -5,13 +5,14 @@ import { Select } from 'antd';
 import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from "moment";
 import {find_nearest_date_from_day, generate_recurrent_date} from "../../../shared";
-
+import { TimePicker } from 'antd';
+import axios from "axios";
 const { Option } = Select
 
 export const UserPage = () => {
 
 	const localizer = momentLocalizer(moment);
-
+	const [selectedUserId, setSelectedUserId] = useState();
 	const [userList, setUserList] = useState([]);
 	const [isEditModalVisible, setIsEditModalVisible] = useState(false);
 	const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
@@ -19,10 +20,12 @@ export const UserPage = () => {
 	const [selectedUser, setSelectedUser] = useState({});
 	const [subjectList, setSubjectList] = useState([]);
 	const [isRosterModalVisible, setIsRosterModalVisible] = useState(false);
+	const [isAssignRosterVisible, setIsAssignRosterVisible] = useState(false);
 
 	const [events, setEvents] = useState([]);
 
 	async function viewRosterModule(values) {
+		console.log("VALUES", values);
 		let eventList = []
 		for (let i = 0; i < values.rosters.length; i++) {
 			console.log(values.rosters[i])
@@ -91,6 +94,12 @@ export const UserPage = () => {
 							viewRosterModule(rowData)
 						}
 					}>View Roster</a>
+					<a onClick={
+						() => {
+							setIsAssignRosterVisible(true)
+							setSelectedUserId(rowData.id)
+						}
+					}>Assign Roster</a>
 				</Space>
 			),
 		},
@@ -127,6 +136,14 @@ export const UserPage = () => {
 
 	const handleRosterOk = () => {
 		setIsRosterModalVisible(false);
+	}
+
+	const handleAssignRosterOk = () => {
+		setIsAssignRosterVisible(false);
+	}
+
+	const handleAssignRosterCancel = () => {
+		setIsAssignRosterVisible(false);
 	}
 
 	const handleRosterCancel = () => {
@@ -249,6 +266,103 @@ export const UserPage = () => {
 			})
 			.catch(err => console.log(err));
 	}
+
+	const assignRosterColumns = [
+		{
+			title: 'Name',
+			dataIndex: 'name',
+			key: 'name',
+			render: text => <a>{text}</a>,
+		},
+		{
+			title: 'Age',
+			dataIndex: 'age',
+			key: 'age',
+		},
+		{
+			title: 'Address',
+			dataIndex: 'address',
+			key: 'address',
+		},
+		{
+			title: 'Tags',
+			key: 'tags',
+			dataIndex: 'tags',
+			render: tags => (
+				<>
+					{tags.map(tag => {
+						let color = tag.length > 5 ? 'geekblue' : 'green';
+						if (tag === 'loser') {
+							color = 'volcano';
+						}
+						return (
+							<Tag color={color} key={tag}>
+								{tag.toUpperCase()}
+							</Tag>
+						);
+					})}
+				</>
+			),
+		},
+		{
+			title: 'Action',
+			key: 'action',
+			render: (text, record) => (
+				<Space size="middle">
+					<a>Invite {record.name}</a>
+					<a>Delete</a>
+				</Space>
+			),
+		},
+	];
+
+	const assignRosterData = [
+		{
+			key: '1',
+			name: 'John Brown',
+			age: 32,
+			address: 'New York No. 1 Lake Park',
+			tags: ['nice', 'developer'],
+		},
+		{
+			key: '2',
+			name: 'Jim Green',
+			age: 42,
+			address: 'London No. 1 Lake Park',
+			tags: ['loser'],
+		},
+		{
+			key: '3',
+			name: 'Joe Black',
+			age: 32,
+			address: 'Sidney No. 1 Lake Park',
+			tags: ['cool', 'teacher'],
+		},
+	];
+
+	const onAssignRosterFinish = (values) => {
+		values.start_hour = new Date(values.start_hour).getHours()
+		values.end_hour = new Date(values.end_hour).getHours()
+		values.user_id = selectedUserId
+		console.log("TO POST", values)
+		axios.post("/api/rosters/", values, {
+			headers: {
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
+			}
+		})
+			.then(result => {
+				console.log("SUCCESS", result)
+			})
+			.catch(error => {
+				console.log("Error", error)
+			})
+	};
+
+	const onAssignRosterFinishFailed = (errorInfo) => {
+		console.log('Failed:', errorInfo);
+	};
+
+	const format = 'HH';
 
 	useEffect(() => {
 		getUserList();
@@ -510,6 +624,82 @@ export const UserPage = () => {
 					//   return addDays(e, end.dates[0].numPostDays);
 					// }}
 				/>
+			</Modal>
+
+			<Modal title="Assign Roster" visible={isAssignRosterVisible} onOk={handleAssignRosterOk} onCancel={handleAssignRosterCancel}>
+				<Form
+					name="basic"
+					labelCol={{
+						span: 6,
+					}}
+					wrapperCol={{
+						span: 18,
+					}}
+					initialValues={{
+						remember: true,
+					}}
+					onFinish={onAssignRosterFinish}
+					onFinishFailed={onAssignRosterFinishFailed}
+					autoComplete="off"
+				>
+					<Form.Item
+						label="Day"
+						name="day"
+					>
+						<Select defaultValue="monday" style={{ width: 120 }} onChange={() => {}}>
+							<Option value="monday">monday</Option>
+							<Option value="tuesday">tuesday</Option>
+							<Option value="wednesday">wednesday</Option>
+							<Option value="thursday">thursday</Option>
+							<Option value="friday">friday</Option>
+						</Select>
+					</Form.Item>
+
+					<Form.Item
+						label="Start Time (hour)"
+						name="start_hour"
+					>
+						<TimePicker defaultValue={moment('12:08', format)} format={format} />
+					</Form.Item>
+
+					<Form.Item
+						label="End Time (hour)"
+						name="end_hour"
+					>
+						<TimePicker defaultValue={moment('12:08', format)} format={format} />
+					</Form.Item>
+
+					<Form.Item
+						label="Subject Name"
+						name="subject_id"
+					>
+						<Select
+							style={{ width: '100%' }}
+							placeholder="Please select"
+							defaultValue={subjectList.length > 0 && parseInt(subjectList[0].code)}
+							onChange={handleChange}
+						>
+							{
+								subjectList && (
+									subjectList.map((subjectDetails) => (
+										<Option value={parseInt(subjectDetails.code)}>{ subjectDetails.name }</Option>
+									))
+								)
+							}
+						</Select>
+					</Form.Item>
+
+					<Form.Item
+						wrapperCol={{
+							offset: 8,
+							span: 16,
+						}}
+					>
+						<Button type="primary" htmlType="submit">
+							Submit
+						</Button>
+					</Form.Item>
+				</Form>
 			</Modal>
 		</>
 	)
