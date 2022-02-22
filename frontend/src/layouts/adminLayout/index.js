@@ -30,6 +30,9 @@ export const AdminLayout = () => {
 					<SubMenu key="sub2" icon={<UserOutlined/>} title="Subjects">
 						<Menu.Item key="2" onClick={() => navigate("/admin/subjects")}>View</Menu.Item>
 					</SubMenu>
+					<SubMenu key="sub3" icon={<UserOutlined/>} title="Leaves">
+						<Menu.Item key="3" onClick={() => navigate("/admin/leaves")}>View</Menu.Item>
+					</SubMenu>
 					<Menu.Item key="99" onClick={() => navigate("/login")}>Log Out</Menu.Item>
 				</Menu>
 			</Sider>

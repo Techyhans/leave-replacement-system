@@ -12,6 +12,7 @@ import {UserPage} from "./pages/admin/user";
 import {SubjectPage} from "./pages/admin/subjects";
 import {UserDashboardPage} from "./pages/user/dashboard";
 import {UserLeavePage} from "./pages/user/leaves";
+import {LeavePage} from "./pages/admin/leaves";
 
 function App() {
 	return (
@@ -30,6 +31,7 @@ function App() {
 						<Route path="/admin" element={<AdminLayout/>}>
 							<Route path="/admin/users" element={<UserPage />}/>
 							<Route path="/admin/subjects" element={<SubjectPage />}/>
+							<Route path="/admin/leaves" element={<LeavePage />}/>
 						</Route>
 						<Route
 							element={<Login/>}
