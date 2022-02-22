@@ -676,13 +676,13 @@ export const UserPage = () => {
 						<Select
 							style={{ width: '100%' }}
 							placeholder="Please select"
-							defaultValue={subjectList.length > 0 && parseInt(subjectList[0].code)}
+							defaultValue={subjectList.length > 0 && parseInt(subjectList[0].id)}
 							onChange={handleChange}
 						>
 							{
 								subjectList && (
 									subjectList.map((subjectDetails) => (
-										<Option value={parseInt(subjectDetails.code)}>{ subjectDetails.name }</Option>
+										<Option value={parseInt(subjectDetails.id)}>{ subjectDetails.name }</Option>
 									))
 								)
 							}
