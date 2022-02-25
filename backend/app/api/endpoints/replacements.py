@@ -38,6 +38,19 @@ def create_replacement(
     return replacement
 
 
+@router.put("/me", response_model=List[schemas.Replacement])
+def get_replacement_me(
+        *,
+        db: Session = Depends(deps.get_db),
+        current_user: models.User = Depends(deps.get_current_active_user),
+) -> Any:
+    """
+    Get own replacement.
+    """
+    replacements = crud.replacement.get_multi_by_owner(db, owner_id=current_user.id)
+    return replacements
+
+
 @router.get("/{id}", response_model=schemas.Replacement)
 def read_replacement(
         *,
