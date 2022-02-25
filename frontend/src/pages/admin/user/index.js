@@ -18,17 +18,17 @@ export const UserPage = () => {
 	const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 	const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 	const [selectedUser, setSelectedUser] = useState({});
+	const [selectedRosterDetails, setSelectedRosterDetails] = useState({});
 	const [subjectList, setSubjectList] = useState([]);
 	const [isRosterModalVisible, setIsRosterModalVisible] = useState(false);
 	const [isAssignRosterVisible, setIsAssignRosterVisible] = useState(false);
+	const [isDeleteRosterVisible, setIsDeleteRosterVisible] = useState(false);
 
 	const [events, setEvents] = useState([]);
 
 	async function viewRosterModule(values) {
-		console.log("VALUES", values);
 		let eventList = []
 		for (let i = 0; i < values.rosters.length; i++) {
-			console.log(values.rosters[i])
 			let start_date = find_nearest_date_from_day(values.rosters[i].day, values.rosters[i].start_hour)
 			let end_date = find_nearest_date_from_day(values.rosters[i].day, values.rosters[i].end_hour)
 			let dt = await generate_recurrent_date(start_date, end_date, values.rosters[i].subject.name)
@@ -100,10 +100,34 @@ export const UserPage = () => {
 							setSelectedUserId(rowData.id)
 						}
 					}>Assign Roster</a>
+					<a onClick={
+						() => {
+							setSelectedRosterDetails(rowData.rosters.map(rosterDetails => {
+								return {
+									id: rosterDetails.id,
+									day: rosterDetails.day,
+									start_hour: rosterDetails.start_hour,
+									end_hour: rosterDetails.end_hour,
+									subject_name: rosterDetails.subject.name,
+									subject_code: rosterDetails.subject.code,
+								}
+							}))
+							setIsDeleteRosterVisible(true)
+						}
+					}>Delete Roster</a>
 				</Space>
 			),
 		},
 	];
+
+	const handleDeleteRosterOk = () => {
+		setIsDeleteRosterVisible(false);
+	};
+
+
+	const handleDeleteRosterCancel = () => {
+		setIsDeleteRosterVisible(false);
+	};
 
 	const showCreateModal = () => {
 		setIsCreateModalVisible(true);
@@ -160,11 +184,14 @@ export const UserPage = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
+
+			})
+			.catch(err => console.log(err))
+			.finally(() => {
 				alert("Deleted")
 				setIsDeleteModalVisible(false);
 				getUserList();
 			})
-			.catch(err => console.log(err));
 	};
 
 	const handleDeleteCancel = () => {
@@ -266,6 +293,64 @@ export const UserPage = () => {
 			})
 			.catch(err => console.log(err));
 	}
+
+	function onDeleteRoster(record) {
+		axios.delete(`/api/rosters/${record.id}`, {
+			headers: {
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
+			}
+		})
+			.then((res) => {
+				alert("Roster Deleted Successfully")
+				setIsDeleteRosterVisible(false)
+				getUserList()
+			})
+			.catch((error) => {
+				console.log("error", error)
+			})
+	}
+
+	const deleteRosterColumns = [
+		{
+			title: 'ID',
+			dataIndex: 'id',
+			key: 'id',
+		},
+		{
+			title: 'Day',
+			dataIndex: 'day',
+			key: 'day',
+		},
+		{
+			title: 'Start Hour',
+			dataIndex: 'start_hour',
+			key: 'start_hour',
+		},
+		{
+			title: 'End Hour',
+			dataIndex: 'end_hour',
+			key: 'end_hour',
+		},
+		{
+			title: 'Subject Name',
+			dataIndex: 'subject_name',
+			key: 'subject_name',
+		},
+		{
+			title: 'Subject Code',
+			dataIndex: 'subject_code',
+			key: 'subject_code',
+		},
+		{
+			title: 'Action',
+			key: 'action',
+			render: (text, record) => (
+				<Space size="middle">
+					<a onClick={() => onDeleteRoster(record)}>Delete</a>
+				</Space>
+			),
+		},
+	];
 
 	const assignRosterColumns = [
 		{
@@ -700,6 +785,10 @@ export const UserPage = () => {
 						</Button>
 					</Form.Item>
 				</Form>
+			</Modal>
+
+			<Modal title="Delete Roster" visible={isDeleteRosterVisible} onOk={handleDeleteRosterOk} onCancel={handleDeleteRosterCancel} width={1500}>
+				<Table dataSource={selectedRosterDetails} columns={deleteRosterColumns} />
 			</Modal>
 		</>
 	)

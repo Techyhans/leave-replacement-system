@@ -8,6 +8,66 @@ import axios from "axios";
 export const LeavePage = () => {
 
 	const [dataSource, setDataSource] = useState([]);
+	const [isAssignLecturerModalVisible, setIsAssignLecturerModalVisible] = useState(false);
+	const [lecturerToReplaceList, setLecturerToReplaceList] = useState([]);
+	const [selectedRosterId, setSelectedRosterId] = useState();
+
+	const handleAssignLecturerModalOk = () => {
+		setIsAssignLecturerModalVisible(false);
+	};
+
+	const handleAssignLecturerModalCancel = () => {
+		setIsAssignLecturerModalVisible(false);
+	};
+
+	const predictAssignLecturer = (roster_id) => {
+		axios.post("/api/models/predict", {
+			roster_id: roster_id
+		}, {
+			headers: {
+				"Authorization": "Bearer " + localStorage.getItem("token")
+			}
+		}).then(res => {
+			const response = res.data
+			setLecturerToReplaceList(response.map(lecturerDetails => {
+				return {
+					user_id: lecturerDetails.user.id,
+					full_name: lecturerDetails.user.full_name,
+					email: lecturerDetails.user.email,
+					gender: lecturerDetails.user.gender,
+					score: parseFloat(lecturerDetails.score).toFixed(2)
+				}
+			}));
+			setIsAssignLecturerModalVisible(true)
+		})
+			.catch(err => {
+				console.log(err)
+			})
+	}
+
+	const getRosterBasedOnUser = (userId, day) => {
+		axios.get('/api/rosters/?skip=0&limit=100', {
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem('token')
+			}
+		})
+			.then((res) => {
+				let rosterNeeded = []
+				const response = res.data
+				for (let i = 0; i < response.length; i++) {
+					if (response[i].user_id == userId && response[i].day == day) {
+						rosterNeeded.push(response[i])
+						setSelectedRosterId(response[i].id)
+						predictAssignLecturer(response[i].id)
+						break;
+					}
+				}
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+	};
+
 
 	const getLeaveList = () => {
 		fetch('/api/leaves/', {
@@ -24,16 +84,46 @@ export const LeavePage = () => {
 			.catch(err => console.log(err));
 	};
 
-	const approveLeave = (leaveId) => {
-		axios.put(`/api/leaves/${leaveId}`, {
-			"approved": true
+	const approveLeave = async (userId, leaveId, leaveDate) => {
+		let day = ""
+		if (moment(leaveDate).isoWeekday() == 1) {
+			day = "monday"
+		}
+		if (moment(leaveDate).isoWeekday() == 2) {
+			day = "tuesday"
+		}
+		if (moment(leaveDate).isoWeekday() == 3) {
+			day = "wednesday"
+		}
+		if (moment(leaveDate).isoWeekday() == 4) {
+			day = "thursday"
+		}
+		if (moment(leaveDate).isoWeekday() == 5) {
+			day = "friday"
+		}
+		if (moment(leaveDate).isoWeekday() == 6) {
+			day = "saturday"
+		}
+		if (moment(leaveDate).isoWeekday() == 7) {
+			day = "sunday"
+		}
+
+		getRosterBasedOnUser(userId, day)
+	}
+
+	const assignUserToLeave = (user_id) => {
+		axios.post(`/api/replacements/`, {
+			roster_id: selectedRosterId,
+			user_id: user_id
 		}, {
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('token'),
 			}
 		})
 			.then(res => {
+				alert("Assigned Successfully")
 				getLeaveList();
+				setIsAssignLecturerModalVisible(false)
 			})
 			.catch(err => console.log(err));
 	}
@@ -68,7 +158,7 @@ export const LeavePage = () => {
 						<Space size="middle">
 							<a onClick={
 								() => {
-									approveLeave(record.id)
+									approveLeave(record.user.id, record.id, record.date)
 								}
 							}>Approve</a>
 						</Space>
@@ -78,9 +168,50 @@ export const LeavePage = () => {
 		},
 	];
 
+	const assignLecturerColumns = [
+		{
+			title: 'Id',
+			dataIndex: 'user_id',
+			key: 'user_id',
+		},
+		{
+			title: 'Full Name',
+			dataIndex: 'full_name',
+			key: 'full_name',
+		},
+		{
+			title: 'Email',
+			dataIndex: 'email',
+			key: 'email',
+		},
+		{
+			title: 'Gender',
+			dataIndex: 'gender',
+			key: 'gender',
+		},
+		{
+			title: 'Score',
+			dataIndex: 'score',
+			key: 'score',
+		},
+		{
+			title: 'Action',
+			key: 'action',
+			render: (text, record) => (
+				<Space size="middle">
+					<a onClick={() => assignUserToLeave(record.user_id)}>Assign</a>
+				</Space>
+			),
+		},
+	];
+
 	return (
 		<>
 			<Table dataSource={dataSource} columns={columns} />
+
+			<Modal title="Assign Lecturer" visible={isAssignLecturerModalVisible} onOk={handleAssignLecturerModalOk} onCancel={handleAssignLecturerModalCancel} width={1500}>
+				<Table dataSource={lecturerToReplaceList} columns={assignLecturerColumns} />
+			</Modal>
 		</>
 	);
 }
