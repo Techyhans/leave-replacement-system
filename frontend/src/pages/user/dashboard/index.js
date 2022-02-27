@@ -7,7 +7,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import {format, addDays, subDays} from "date-fns";
 import RRule from "rrule";
-import {find_nearest_date_from_day, generate_recurrent_date} from "../../../shared";
+import {find_nearest_date_from_day, generate_recurrent_date} from "../../../utils";
 
 const localizer = momentLocalizer(moment);
 

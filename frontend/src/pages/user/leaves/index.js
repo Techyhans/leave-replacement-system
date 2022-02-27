@@ -1,4 +1,4 @@
-import {Button, DatePicker, Form, Input, Select, Table} from "antd";
+import {Button, DatePicker, Form, Input, notification, Select, Spin, Table} from "antd";
 import {useEffect, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import {momentLocalizer} from "react-big-calendar";
@@ -7,6 +7,7 @@ import axios from "axios";
 
 export const UserLeavePage = () => {
 
+	const [loading, setLoading] = useState(false);
 	const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 	const [dataSource, setDataSource] = useState([]);
 	const showCreateModal = () => {
@@ -33,6 +34,7 @@ export const UserLeavePage = () => {
 	}
 
 	const onCreateFinish = (values) => {
+		setLoading(true);
 		values.date = values.date.format('YYYY-MM-DD');
 		values.approved = false;
 
@@ -42,9 +44,15 @@ export const UserLeavePage = () => {
 					Authorization: 'Bearer ' + localStorage.getItem('token'),
 				}
 			}).then(resp => {
+				notification["success"]({
+					message: 'Success',
+					description:
+						'Leave Applied Successfully',
+				});
 				getLeaveList();
 			})
-			.catch(err => console.log(err));
+			.catch(err => console.log(err))
+			.finally(() => setLoading(false));
 	};
 
 	const onCreateFailed = (error) => {
@@ -95,7 +103,7 @@ export const UserLeavePage = () => {
 
 			<Table dataSource={dataSource} columns={columns} />
 
-			<Modal title="Create" visible={isCreateModalVisible} onOk={handleCreateOk} onCancel={handleCreateCancel}>
+			<Modal title="Apply Leave" visible={isCreateModalVisible} onOk={handleCreateOk} onCancel={handleCreateCancel} footer={null}>
 				<Form
 					name="basic"
 					labelCol={{span: 6}}
@@ -120,11 +128,15 @@ export const UserLeavePage = () => {
 						<Input />
 					</Form.Item>
 
-					<Form.Item wrapperCol={{offset: 6, span: 18}}>
-						<Button type="primary" htmlType="submit">
-							Apply
-						</Button>
-					</Form.Item>
+					{
+						loading ? <Spin /> : (
+							<Form.Item wrapperCol={{offset: 6, span: 18}}>
+								<Button type="primary" htmlType="submit">
+									Apply
+								</Button>
+							</Form.Item>
+						)
+					}
 				</Form>
 			</Modal>
 		</>

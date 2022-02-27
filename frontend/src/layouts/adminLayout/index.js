@@ -21,7 +21,7 @@ export const AdminLayout = () => {
 		<Layout style={{minHeight: '100vh'}}>
 			<Sider collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
 				<div className="logo">
-					<img src={"https://upload.wikimedia.org/wikipedia/commons/8/8d/Google_logo_%282010-2013%29.svg"} width={180} alt="logo"/>
+					<img src={require("../../assets/logo.jpeg")} style={{ width: "10vw" }} alt={"logo"}/>
 				</div>
 				<Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
 					<SubMenu key="sub1" icon={<UserOutlined/>} title="User">
@@ -40,8 +40,8 @@ export const AdminLayout = () => {
 				<Header className="site-layout-background" style={{padding: 0}}/>
 				<Content style={{margin: '0 16px'}}>
 					<Breadcrumb style={{margin: '16px 0'}}>
-						<Breadcrumb.Item>User</Breadcrumb.Item>
-						<Breadcrumb.Item>Bill</Breadcrumb.Item>
+						{/*<Breadcrumb.Item>User</Breadcrumb.Item>*/}
+						{/*<Breadcrumb.Item>Bill</Breadcrumb.Item>*/}
 					</Breadcrumb>
 					<Outlet />
 				</Content>

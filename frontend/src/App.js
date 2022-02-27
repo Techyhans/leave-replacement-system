@@ -13,6 +13,7 @@ import {SubjectPage} from "./pages/admin/subjects";
 import {UserDashboardPage} from "./pages/user/dashboard";
 import {UserLeavePage} from "./pages/user/leaves";
 import {LeavePage} from "./pages/admin/leaves";
+import {UserReplacementPage} from "./pages/user/replacements";
 
 function App() {
 	return (
@@ -27,6 +28,7 @@ function App() {
 						<Route path="/user" element={<UserLayout/>}>
 							<Route path="/user/dashboard" element={<UserDashboardPage />}/>
 							<Route path="/user/leaves" element={<UserLeavePage />}/>
+							<Route path="/user/replacements" element={<UserReplacementPage />}/>
 						</Route>
 						<Route path="/admin" element={<AdminLayout/>}>
 							<Route path="/admin/users" element={<UserPage />}/>

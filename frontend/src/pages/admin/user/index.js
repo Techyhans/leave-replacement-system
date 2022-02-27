@@ -1,16 +1,17 @@
-import {Table, Tag, Space, Form, Input, Button} from 'antd';
+import {Table, Tag, Space, Form, Input, Button, notification, Spin} from 'antd';
 import React, {useEffect, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import { Select } from 'antd';
 import {Calendar, momentLocalizer} from "react-big-calendar";
 import moment from "moment";
-import {find_nearest_date_from_day, generate_recurrent_date} from "../../../shared";
+import {find_nearest_date_from_day, generate_recurrent_date} from "../../../utils";
 import { TimePicker } from 'antd';
 import axios from "axios";
 const { Option } = Select
 
 export const UserPage = () => {
 
+	const [loading, setLoading] = useState(false);
 	const localizer = momentLocalizer(moment);
 	const [selectedUserId, setSelectedUserId] = useState();
 	const [userList, setUserList] = useState([]);
@@ -188,7 +189,6 @@ export const UserPage = () => {
 			})
 			.catch(err => console.log(err))
 			.finally(() => {
-				alert("Deleted")
 				setIsDeleteModalVisible(false);
 				getUserList();
 			})
@@ -231,14 +231,7 @@ export const UserPage = () => {
 	};
 
 	const onCreateFinish = (values) => {
-		// const dataToSubmit = {
-		// 	...values,
-		// 	subjects: subjectList.filter(subjectDetails => {
-		// 		if (values.subject_ids.includes(subjectDetails.code)) {
-		// 			return parseInt(subjectDetails.code)
-		// 		}
-		// 	})
-		// }
+		setLoading(true)
 
 		fetch('/api/users/', {
 			method: 'POST',
@@ -251,11 +244,16 @@ export const UserPage = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				alert("Created")
+				notification["success"]({
+					message: 'Success',
+					description:
+						'User Created Successfully',
+				});
 				setIsCreateModalVisible(false);
 				getUserList();
 			})
-			.catch(err => console.log(err));
+			.catch(err => console.log(err))
+			.finally(() => setLoading(false));
 	};
 
 	const onCreateFailed = (error) => {
@@ -295,18 +293,29 @@ export const UserPage = () => {
 	}
 
 	function onDeleteRoster(record) {
+		setLoading(true)
 		axios.delete(`/api/rosters/${record.id}`, {
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('token'),
 			}
 		})
 			.then((res) => {
-				alert("Roster Deleted Successfully")
-				setIsDeleteRosterVisible(false)
-				getUserList()
+				// alert("Roster Deleted Successfully")
+				// setIsDeleteRosterVisible(false)
+				// getUserList()
 			})
 			.catch((error) => {
 				console.log("error", error)
+			})
+			.finally(() => {
+				notification["success"]({
+					message: 'Success',
+					description:
+						'Roster Deleted Successfully',
+				});
+				setIsDeleteRosterVisible(false)
+				getUserList()
+				setLoading(false)
 			})
 	}
 
@@ -426,21 +435,28 @@ export const UserPage = () => {
 	];
 
 	const onAssignRosterFinish = (values) => {
+		setLoading(true)
 		values.start_hour = new Date(values.start_hour).getHours()
 		values.end_hour = new Date(values.end_hour).getHours()
 		values.user_id = selectedUserId
-		console.log("TO POST", values)
 		axios.post("/api/rosters/", values, {
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('token'),
 			}
 		})
 			.then(result => {
-				console.log("SUCCESS", result)
+				setIsAssignRosterVisible(false)
+				getUserList()
+				notification["success"]({
+					message: 'Success',
+					description:
+						'Roster Assigned Successfully',
+				});
 			})
 			.catch(error => {
-				console.log("Error", error)
+				console.log(error)
 			})
+			.finally(() => setLoading(false))
 	};
 
 	const onAssignRosterFinishFailed = (errorInfo) => {
@@ -462,7 +478,7 @@ export const UserPage = () => {
 
 			<Table columns={columns} dataSource={userList}/>
 
-			<Modal title="Create" visible={isCreateModalVisible} onOk={handleCreateOk} onCancel={handleCreateCancel}>
+			<Modal title="Create User" visible={isCreateModalVisible} onOk={handleCreateOk} onCancel={handleCreateCancel} footer={null}>
 				<Form
 					name="basic"
 					labelCol={{span: 6}}
@@ -490,7 +506,12 @@ export const UserPage = () => {
 					<Form.Item
 						label="Email"
 						name="email"
-						rules={[{required: true, message: 'Please input email!'}]}
+						rules={[{
+								required: true, message: 'Please input email!'
+							},{
+								type: "email"
+							}
+							]}
 					>
 						<Input/>
 					</Form.Item>
@@ -500,7 +521,16 @@ export const UserPage = () => {
 						name="gender"
 						rules={[{required: true, message: 'Please input gender!'}]}
 					>
-						<Input/>
+						<Select
+							mode="single"
+							allowClear
+							style={{ width: '100%' }}
+							placeholder="Please select"
+							onChange={() => {}}
+						>
+							<Option value={"male"}>Male</Option>
+							<Option value={"female"}>Female</Option>
+						</Select>
 					</Form.Item>
 
 					<Form.Item
@@ -567,15 +597,19 @@ export const UserPage = () => {
 						</Select>
 					</Form.Item>
 
-					<Form.Item wrapperCol={{offset: 6, span: 18}}>
-						<Button type="primary" htmlType="submit">
-							Create
-						</Button>
-					</Form.Item>
+					{
+						loading ? <Spin /> : (
+							<Form.Item wrapperCol={{offset: 6, span: 18}}>
+								<Button type="primary" htmlType="submit">
+									Create
+								</Button>
+							</Form.Item>
+						)
+					}
 				</Form>
 			</Modal>
 
-			<Modal title="Edit" visible={isEditModalVisible} onOk={handleEditOk} onCancel={handleEditCancel}>
+			<Modal title="Edit User" visible={isEditModalVisible} onOk={handleEditOk} onCancel={handleEditCancel}>
 				<Form
 					name="basic"
 					labelCol={{span: 6}}
@@ -613,7 +647,16 @@ export const UserPage = () => {
 						name="gender"
 						rules={[{required: true, message: 'Please input gender!'}]}
 					>
-						<Input/>
+						<Select
+							mode="single"
+							allowClear
+							style={{ width: '100%' }}
+							placeholder="Please select"
+							onChange={() => {}}
+						>
+							<Option value={"male"}>Male</Option>
+							<Option value={"female"}>Female</Option>
+						</Select>
 					</Form.Item>
 
 					<Form.Item
@@ -711,7 +754,7 @@ export const UserPage = () => {
 				/>
 			</Modal>
 
-			<Modal title="Assign Roster" visible={isAssignRosterVisible} onOk={handleAssignRosterOk} onCancel={handleAssignRosterCancel}>
+			<Modal title="Assign Roster" visible={isAssignRosterVisible} onOk={handleAssignRosterOk} onCancel={handleAssignRosterCancel} footer={null}>
 				<Form
 					name="basic"
 					labelCol={{
@@ -744,14 +787,14 @@ export const UserPage = () => {
 						label="Start Time (hour)"
 						name="start_hour"
 					>
-						<TimePicker defaultValue={moment('12:08', format)} format={format} />
+						<TimePicker format={format} />
 					</Form.Item>
 
 					<Form.Item
 						label="End Time (hour)"
 						name="end_hour"
 					>
-						<TimePicker defaultValue={moment('12:08', format)} format={format} />
+						<TimePicker format={format} />
 					</Form.Item>
 
 					<Form.Item
@@ -774,16 +817,20 @@ export const UserPage = () => {
 						</Select>
 					</Form.Item>
 
-					<Form.Item
-						wrapperCol={{
-							offset: 8,
-							span: 16,
-						}}
-					>
-						<Button type="primary" htmlType="submit">
-							Submit
-						</Button>
-					</Form.Item>
+					{
+						loading ? <Spin /> : (
+							<Form.Item
+								wrapperCol={{
+									offset: 8,
+									span: 16,
+								}}
+							>
+								<Button type="primary" htmlType="submit">
+									Submit
+								</Button>
+							</Form.Item>
+						)
+					}
 				</Form>
 			</Modal>
 
