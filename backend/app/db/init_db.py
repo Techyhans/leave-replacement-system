@@ -31,35 +31,36 @@ def init_db(db: Session) -> None:
 
     subjects = crud.subject.get_multi(db)
     if len(subjects) == 0:
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1103", name="Malay Language"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1119", name="English Language"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1223", name="Islamic Studies"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1225", name="Moral Education"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1249", name="History"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="1449", name="Mathematics"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="3472", name="Additional Mathematics"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="4531", name="Physics"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="4541", name="Chemistry"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="4551", name="Biology"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="2205", name="Literature in English"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="2215", name="Malay Literature"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="3766", name="Business"))
-        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="3767", name="Economics"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0001", name="Bahasa Arab"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0002", name="Bahasa Cina"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0003", name="Bahasa Tamil"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0004", name="Bahasa Melayu"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0005", name="Bahasa Inggeris"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0006", name="Pendidikan Islam"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0007", name="Pendidikan Moral"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0008", name="Sejarah"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0009", name="Matematik"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0010", name="Sains"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0011", name="Reka Bentuk Teknologi"))
+        crud.subject.create(db,
+                            obj_in=schemas.SubjectCreate(code="0012", name="Pendidikan Jasmani & Pendidikan Kesihatan"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0013", name="Pendidikan Muzik"))
+        crud.subject.create(db, obj_in=schemas.SubjectCreate(code="0014", name="Pendidikan Seni Visual"))
 
     teacher1 = schemas.UserCreate(full_name="Amar", gender="male", email="amar@example.com",
                                   password="amar", is_superuser=False, subjects=[1, 2])
     teacher2 = schemas.UserCreate(full_name="Siti", gender="female", email="siti@example.com",
-                                  password="sity", is_superuser=False, subjects=[4, 5])
+                                  password="sity", is_superuser=False, subjects=[6, 7])
     teacher3 = schemas.UserCreate(full_name="Hadi", gender="male", email="hadi@example.com",
-                                  password="hadi", is_superuser=False, subjects=[8, 9])
-    teacher4 = schemas.UserCreate(full_name="Abu", gender="male", email="abu@example.com",
-                                  password="abu", is_superuser=False, subjects=[10, 11])
+                                  password="hadi", is_superuser=False, subjects=[3, 4])
+    teacher4 = schemas.UserCreate(full_name="Abu", gender="male", email="abu@example.csom",
+                                  password="abu", is_superuser=False, subjects=[9, 10, 11])
     teacher5 = schemas.UserCreate(full_name="Alice", gender="female", email="alice@example.com",
                                   password="alice", is_superuser=False, subjects=[13, 14])
     teacher6 = schemas.UserCreate(full_name="Hang Tuah", gender="male", email="hangtuah@example.com",
-                                  password="hangtuah", is_superuser=False, subjects=[3])
+                                  password="hangtuah", is_superuser=False, subjects=[5])
     teacher7 = schemas.UserCreate(full_name="Abdul", gender="male", email="abdul@example.com",
-                                  password="abdul", is_superuser=False, subjects=[6, 7])
+                                  password="abdul", is_superuser=False, subjects=[12])
 
     teacher_list = [teacher1, teacher2, teacher3, teacher4, teacher5, teacher6, teacher7]
     for teacher in teacher_list:
