@@ -26,6 +26,7 @@ export const UserPage = () => {
 	const [isDeleteRosterVisible, setIsDeleteRosterVisible] = useState(false);
 
 	const [events, setEvents] = useState([]);
+	const [form] = Form.useForm();
 
 	async function viewRosterModule(values) {
 		let eventList = []
@@ -85,6 +86,17 @@ export const UserPage = () => {
 					{/*<a>Subjects Assigned</a>*/}
 					<a onClick={
 						() => {
+							form.setFieldsValue({
+								full_name: rowData.full_name,
+								address: rowData.address,
+								email: rowData.email,
+								gender: rowData.gender,
+								is_active: rowData.is_active,
+								is_superuser: rowData.is_superuser,
+								subject_ids: rowData.subjects.map(subjectDetails => {
+									return subjectDetails.id
+								})
+							})
 							setSelectedUser(rowData);
 							setIsEditModalVisible(true)
 						}
@@ -219,7 +231,11 @@ export const UserPage = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				alert("Updated")
+				notification["success"]({
+					message: 'Success',
+					description:
+						'User Updated Successfully',
+				});
 				setIsEditModalVisible(false);
 				getUserList();
 			})
@@ -609,8 +625,9 @@ export const UserPage = () => {
 				</Form>
 			</Modal>
 
-			<Modal title="Edit User" visible={isEditModalVisible} onOk={handleEditOk} onCancel={handleEditCancel}>
+			<Modal title="Edit User" visible={isEditModalVisible} onOk={handleEditOk} onCancel={handleEditCancel} footer={null}>
 				<Form
+					form={form}
 					name="basic"
 					labelCol={{span: 6}}
 					wrapperCol={{span: 18}}
@@ -711,13 +728,13 @@ export const UserPage = () => {
 							allowClear
 							style={{ width: '100%' }}
 							placeholder="Please select"
-							defaultValue={selectedUser.subjects && selectedUser.subjects.map((subjectDetails) => { return subjectDetails.code })}
+							// defaultValue={selectedUser.subjects && selectedUser.subjects.map((subjectDetails) => { return subjectDetails.code })}
 							onChange={handleChange}
 						>
 							{
 								subjectList && (
 									subjectList.map((subjectDetails) => (
-										<Option value={subjectDetails.code}>{ subjectDetails.name }</Option>
+										<Option value={subjectDetails.id}>{ subjectDetails.name }</Option>
 									))
 								)
 							}

@@ -1,4 +1,4 @@
-import {Button, DatePicker, Form, Input, Select, Space, Table} from "antd";
+import {Button, DatePicker, Form, Input, notification, Select, Space, Table} from "antd";
 import React, {useEffect, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import {momentLocalizer} from "react-big-calendar";
@@ -11,6 +11,8 @@ export const LeavePage = () => {
 	const [isAssignLecturerModalVisible, setIsAssignLecturerModalVisible] = useState(false);
 	const [lecturerToReplaceList, setLecturerToReplaceList] = useState([]);
 	const [selectedRosterId, setSelectedRosterId] = useState();
+	const [leaveDate, setLeaveDate] = useState();
+	const [leaveId, setLeaveId] = useState();
 
 	const handleAssignLecturerModalOk = () => {
 		setIsAssignLecturerModalVisible(false);
@@ -45,7 +47,7 @@ export const LeavePage = () => {
 			})
 	}
 
-	const getRosterBasedOnUser = (userId, day) => {
+	const getRosterBasedOnUser = (userId, day, leaveId) => {
 		axios.get('/api/rosters/?skip=0&limit=100', {
 			headers: {
 				'Authorization': 'Bearer ' + localStorage.getItem('token')
@@ -53,20 +55,43 @@ export const LeavePage = () => {
 		})
 			.then((res) => {
 				let rosterNeeded = []
+				let found = false
 				const response = res.data
 				for (let i = 0; i < response.length; i++) {
 					if (response[i].user_id == userId && response[i].day == day) {
 						rosterNeeded.push(response[i])
 						setSelectedRosterId(response[i].id)
 						predictAssignLecturer(response[i].id)
+						found = true
 						break;
 					}
+				}
+				if (!found) {
+					updateLeaveToApprove(leaveId)
+					getLeaveList()
 				}
 			})
 			.catch((error) => {
 				console.log(error)
 			})
 	};
+
+
+	const updateLeaveToApprove = (leaveId) => {
+		axios.put(`/api/leaves/${leaveId}`, {
+			"approved": true
+		},{
+			headers: {
+				'Authorization': 'Bearer ' + localStorage.getItem('token')
+			}
+		})
+			.then((res) => {
+				getLeaveList()
+			})
+			.catch((error) => {
+				console.log(error)
+			})
+	}
 
 
 	const getLeaveList = () => {
@@ -79,7 +104,16 @@ export const LeavePage = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				setDataSource(data)
+				setDataSource(data.map((data) => {
+					return {
+						leave_id: data.id,
+						description: data.description,
+						date: data.date,
+						approved: data.approved,
+						full_name: data.user.full_name,
+						user_id: data.user.id
+					}
+				}))
 			})
 			.catch(err => console.log(err));
 	};
@@ -107,21 +141,26 @@ export const LeavePage = () => {
 		if (moment(leaveDate).isoWeekday() == 7) {
 			day = "sunday"
 		}
-
-		getRosterBasedOnUser(userId, day)
+		getRosterBasedOnUser(userId, day, leaveId)
 	}
 
 	const assignUserToLeave = (user_id) => {
 		axios.post(`/api/replacements/`, {
 			roster_id: selectedRosterId,
-			user_id: user_id
+			user_id: user_id,
+			date: leaveDate
 		}, {
 			headers: {
 				Authorization: 'Bearer ' + localStorage.getItem('token'),
 			}
 		})
 			.then(res => {
-				alert("Assigned Successfully")
+				notification["success"]({
+					message: 'Success',
+					description:
+						'Assigned Successfully',
+				});
+				updateLeaveToApprove(leaveId)
 				getLeaveList();
 				setIsAssignLecturerModalVisible(false)
 			})
@@ -134,14 +173,19 @@ export const LeavePage = () => {
 
 	const columns = [
 		{
-			title: 'Id',
-			dataIndex: 'id',
-			key: 'id',
+			title: 'Leave Id',
+			dataIndex: 'leave_id',
+			key: 'leave_id',
 		},
 		{
 			title: 'Date',
 			dataIndex: 'date',
 			key: 'date',
+		},
+		{
+			title: 'Full Name',
+			dataIndex: 'full_name',
+			key: 'full_name',
 		},
 		{
 			title: 'Description',
@@ -158,7 +202,9 @@ export const LeavePage = () => {
 						<Space size="middle">
 							<a onClick={
 								() => {
-									approveLeave(record.user.id, record.id, record.date)
+									setLeaveDate(record.date)
+									setLeaveId(record.leave_id)
+									approveLeave(record.user_id, record.leave_id, record.date)
 								}
 							}>Approve</a>
 						</Space>
