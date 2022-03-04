@@ -10,20 +10,20 @@ from app.api.services import Fuzzy
 router = APIRouter()
 
 subject_skill_mapping = {
-    'English Language': 1,
-    'Literature in English': 2,
-    'History': 3,
-    'Malay Language': 4,
-    'Malay Literature': 5,
-    'Islamic Studies': 6,
-    'Moral Education': 7,
-    'Mathematics': 8,
-    'Additional Mathematics': 9,
-    'Physics': 10,
-    'Chemistry': 11,
-    'Biology': 12,
-    'Business': 13,
-    'Economics': 14
+    'Bahasa Arab': 1,
+    'Bahasa Cina': 2,
+    'Bahasa Tamil': 3,
+    'Bahasa Melayu': 4,
+    'Bahasa Inggeris': 5,
+    'Pendidikan Islam': 6,
+    'Pendidikan Moral': 7,
+    'Sejarah': 8,
+    'Matematik': 9,
+    'Sains': 10,
+    'Reka Bentuk Teknologi': 11,
+    'Pendidikan Jasmani & Pendidikan Kesihatan': 12,
+    'Pendidikan Muzik': 13,
+    'Pendidikan Seni Visual': 14
 }
 
 
