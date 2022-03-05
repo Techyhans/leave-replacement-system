@@ -123,19 +123,13 @@ def read_user_me(
 @router.get("/{user_id}", response_model=schemas.User)
 def read_user_by_id(
         user_id: int,
-        current_user: models.User = Depends(deps.get_current_active_user),
+        current_user: models.User = Depends(deps.get_current_active_superuser),
         db: Session = Depends(deps.get_db),
 ) -> Any:
     """
     Get a specific user by id.
     """
     user = crud.user.get(db, id=user_id)
-    if user == current_user:
-        return user
-    if not crud.user.is_superuser(current_user):
-        raise HTTPException(
-            status_code=400, detail="The user doesn't have enough privileges"
-        )
     return user
 
 
@@ -144,17 +138,35 @@ def update_user(
         *,
         db: Session = Depends(deps.get_db),
         user_id: int,
-        user_in: schemas.UserUpdate,
+        full_name: str = Body(None),
+        email: EmailStr = Body(None),
+        address: str = Body(None),
+        gender: str = Body(None),
+        subject_ids: List[int] = Body(None),
         current_user: models.User = Depends(deps.get_current_active_superuser),
 ) -> Any:
     """
     Update a user.
     """
     user = crud.user.get(db, id=user_id)
-    if not user:
-        raise HTTPException(
-            status_code=404,
-            detail="The user with this username does not exist in the system",
-        )
+    current_user_data = jsonable_encoder(user)
+    user_in = schemas.UserUpdate(**current_user_data)
+    if subject_ids is not None:
+        subjects = []
+        for id in subject_ids:
+            subject = crud.subject.get(db, id)
+            if subject is None:
+                raise HTTPException(status_code=404, detail="Subject not found")
+            subjects.append(subject)
+        user_in.subjects = subjects
+        user.subjects = subjects
+    if address is not None:
+        user_in.address = address
+    if gender is not None:
+        user_in.gender = gender
+    if full_name is not None:
+        user_in.full_name = full_name
+    if email is not None:
+        user_in.email = email
     user = crud.user.update(db, db_obj=user, obj_in=user_in)
     return user
