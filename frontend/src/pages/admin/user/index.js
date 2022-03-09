@@ -213,12 +213,10 @@ export const UserPage = () => {
 	const onEditFinish = (values) => {
 		const dataToSubmit = {
 			...values,
-			subjects: subjectList.filter(subjectDetails => {
-				if (values.subject_ids.includes(subjectDetails.code)) {
-					return subjectDetails
-				}
-			})
+			subjects: values.subject_ids
 		}
+
+		console.log(dataToSubmit)
 
 		fetch('/api/users/' + selectedUser.id, {
 			method: 'PUT',
@@ -781,7 +779,9 @@ export const UserPage = () => {
 						span: 18,
 					}}
 					initialValues={{
-						remember: true,
+						day: "monday",
+						// start_hour: "12:00:00",
+						// end_hour: "13:00:00"
 					}}
 					onFinish={onAssignRosterFinish}
 					onFinishFailed={onAssignRosterFinishFailed}
@@ -821,7 +821,7 @@ export const UserPage = () => {
 						<Select
 							style={{ width: '100%' }}
 							placeholder="Please select"
-							defaultValue={subjectList.length > 0 && parseInt(subjectList[0].id)}
+							// defaultValue={subjectList.length > 0 && parseInt(subjectList[0].id)}
 							onChange={handleChange}
 						>
 							{
