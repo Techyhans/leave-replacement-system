@@ -834,6 +834,46 @@ export const UserPage = () => {
 						</Select>
 					</Form.Item>
 
+					<Form.Item
+						label="Class"
+						name="cls"
+					>
+						<Select
+							style={{ width: '100%' }}
+							placeholder="Please select"
+						>
+							<Option value={"1 Anggerik"}>1 Anggerik</Option>
+							<Option value={"1 Cempaka"}>1 Cempaka</Option>
+							<Option value={"1 Dahlia"}>1 Dahlia</Option>
+							<Option value={"1 Teratai"}>1 Teratai</Option>
+							<Option value={"2 Anggerik"}>2 Anggerik</Option>
+							<Option value={"2 Cempaka"}>2 Cempaka</Option>
+							<Option value={"2 Dahlia"}>2 Dahlia</Option>
+							<Option value={"2 Teratai"}>2 Teratai</Option>
+							<Option value={"2 Mawar"}>2 Mawar</Option>
+							<Option value={"3 Anggerik"}>3 Anggerik</Option>
+							<Option value={"3 Cempaka"}>3 Cempaka</Option>
+							<Option value={"3 Dahlia"}>3 Dahlia</Option>
+							<Option value={"3 Teratai"}>3 Teratai</Option>
+							<Option value={"3 Mawar"}>3 Mawar</Option>
+							<Option value={"4 Anggerik"}>4 Anggerik</Option>
+							<Option value={"4 Cempaka"}>4 Cempaka</Option>
+							<Option value={"4 Dahlia"}>4 Dahlia</Option>
+							<Option value={"4 Teratai"}>4 Teratai</Option>
+							<Option value={"4 Mawar"}>4 Mawar</Option>
+							<Option value={"5 Anggerik"}>5 Anggerik</Option>
+							<Option value={"5 Cempaka"}>5 Cempaka</Option>
+							<Option value={"5 Dahlia"}>5 Dahlia</Option>
+							<Option value={"5 Teratai"}>5 Teratai</Option>
+							<Option value={"5 Mawar"}>5 Mawar</Option>
+							<Option value={"6 Anggerik"}>6 Anggerik</Option>
+							<Option value={"6 Cempaka"}>6 Cempaka</Option>
+							<Option value={"6 Dahlia"}>6 Dahlia</Option>
+							<Option value={"6 Teratai"}>6 Teratai</Option>
+							<Option value={"6 Mawar"}>6 Mawar</Option>
+						</Select>
+					</Form.Item>
+
 					{
 						loading ? <Spin /> : (
 							<Form.Item

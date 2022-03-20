@@ -19,7 +19,7 @@ export const UserLayout = () => {
 
 	return (
 		<Layout style={{minHeight: '100vh'}}>
-			<Sider collapsible collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
+			<Sider collapsed={collapsed} onCollapse={() => setCollapsed(!collapsed)}>
 				<div className="logo">
 					<img src={require("../../assets/logo.jpeg")} style={{ width: "10vw" }} alt={"logo"}/>
 				</div>
