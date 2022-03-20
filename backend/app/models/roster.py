@@ -9,6 +9,7 @@ class Roster(Base):
     day = Column(String(50), unique=False, nullable=False)
     start_hour = Column(Integer, unique=False, nullable=False)
     end_hour = Column(Integer, unique=False, nullable=False)
+    cls = Column(String(100), unique=False, nullable=False)
     subject_id = Column(Integer, ForeignKey('subject.id'))
     subject = relationship("Subject", back_populates="rosters")
     user_id = Column(Integer, ForeignKey('user.id'))

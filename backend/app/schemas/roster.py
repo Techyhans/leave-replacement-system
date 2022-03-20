@@ -16,6 +16,7 @@ class DayName(str, Enum):
 
 class RosterBase(BaseModel):
     day: Optional[str] = None
+    cls: Optional[str] = None
     start_hour: Optional[int] = None
     end_hour: Optional[int] = None
 
@@ -24,6 +25,7 @@ class RosterCreate(RosterBase):
     day: DayName
     start_hour: int
     end_hour: int
+    cls: str
     user_id: int
     subject_id: int
 
@@ -32,6 +34,7 @@ class RosterUpdate(RosterBase):
     day: DayName
     start_hour: int
     end_hour: int
+    cls: str
     user_id: int
     subject_id: int
 
