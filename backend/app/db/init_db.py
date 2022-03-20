@@ -66,9 +66,9 @@ def init_db(db: Session) -> None:
     for teacher in teacher_list:
         crud.user.create(db, obj_in=teacher)
 
-    roster1 = schemas.RosterCreate(day='monday', start_hour='8', end_hour='9', user_id=2, subject_id=1)
-    roster2 = schemas.RosterCreate(day='tuesday', start_hour='9', end_hour='10', user_id=3, subject_id=6)
-    roster3 = schemas.RosterCreate(day='wednesday', start_hour='8', end_hour='9', user_id=4, subject_id=14)
+    roster1 = schemas.RosterCreate(day='monday', start_hour='8', end_hour='9', cls='A', user_id=2, subject_id=1)
+    roster2 = schemas.RosterCreate(day='tuesday', start_hour='9', end_hour='10', cls='B', user_id=3, subject_id=6)
+    roster3 = schemas.RosterCreate(day='wednesday', start_hour='8', end_hour='9', cls='C', user_id=4, subject_id=14)
 
     roster_list = [roster1, roster2, roster3]
     for roster in roster_list:
