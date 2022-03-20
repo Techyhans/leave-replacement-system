@@ -14,13 +14,14 @@ class CRUDLeave(CRUDBase[Leave, LeaveCreate, LeaveUpdate]):
         db_obj = Leave(
             date=obj_in.date,
             description=obj_in.description,
+            file_base64=obj_in.file_base64,
             approved=False,
             user=user
         )
         db.add(db_obj)
         db.commit()
         db.refresh(db_obj)
-        return
+        return db_obj
 
     def get_multi_by_user(
             self, db: Session, *, user_id: int, skip: int = 0, limit: int = 100
