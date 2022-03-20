@@ -9,11 +9,13 @@ from app.schemas.user import User
 class LeaveBase(BaseModel):
     date: Optional[date]
     description: Optional[str] = None
+    file_base64: Optional[str] = None
     approved: Optional[bool] = None
 
 
 class LeaveCreate(LeaveBase):
     date: date
+    file_base64: str
     description: str
 
 
