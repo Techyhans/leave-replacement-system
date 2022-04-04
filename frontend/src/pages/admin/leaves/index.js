@@ -1,4 +1,4 @@
-import {Button, DatePicker, Form, Input, notification, Select, Space, Table} from "antd";
+import {Button, DatePicker, Form, Image, Input, notification, Select, Space, Table} from "antd";
 import React, {useEffect, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import {momentLocalizer} from "react-big-calendar";
@@ -7,6 +7,8 @@ import axios from "axios";
 
 export const LeavePage = () => {
 
+	const [viewAttachmentModal, setViewAttachmentModal] = useState(false);
+	const [selectedImage, setSelectedImage] = useState("");
 	const [dataSource, setDataSource] = useState([]);
 	const [isAssignLecturerModalVisible, setIsAssignLecturerModalVisible] = useState(false);
 	const [lecturerToReplaceList, setLecturerToReplaceList] = useState([]);
@@ -80,7 +82,7 @@ export const LeavePage = () => {
 	const updateLeaveToApprove = (leaveId) => {
 		axios.put(`/api/leaves/${leaveId}`, {
 			"approved": true
-		},{
+		}, {
 			headers: {
 				'Authorization': 'Bearer ' + localStorage.getItem('token')
 			}
@@ -111,7 +113,8 @@ export const LeavePage = () => {
 						date: data.date,
 						approved: data.approved,
 						full_name: data.user.full_name,
-						user_id: data.user.id
+						user_id: data.user.id,
+						file_base64: data.file_base64,
 					}
 				}))
 			})
@@ -193,22 +196,28 @@ export const LeavePage = () => {
 			key: 'description',
 		},
 		{
-			title: 'Approved',
+			title: 'Action',
 			dataIndex: 'approved',
 			key: 'approved',
 			render: (text, record) => (
 				<span>
-					{record.approved ? 'Yes' : (
-						<Space size="middle">
-							<a onClick={
-								() => {
-									setLeaveDate(record.date)
-									setLeaveId(record.leave_id)
-									approveLeave(record.user_id, record.leave_id, record.date)
-								}
-							}>Approve</a>
+					<Space size="middle">
+							<a onClick={() => {
+								console.log("HELLO")
+								setSelectedImage(record.file_base64)
+								setViewAttachmentModal(true)
+							}}>Attachment</a>
+							{record.approved ? 'Approved' : (
+								<a onClick={
+									() => {
+										setLeaveDate(record.date)
+										setLeaveId(record.leave_id)
+										approveLeave(record.user_id, record.leave_id, record.date)
+									}
+								}>Approve</a>
+							)}
 						</Space>
-					)}
+
 				</span>
 			),
 		},
@@ -253,10 +262,25 @@ export const LeavePage = () => {
 
 	return (
 		<>
-			<Table dataSource={dataSource} columns={columns} />
+			<Table dataSource={dataSource} columns={columns}/>
 
-			<Modal title="Assign Lecturer" visible={isAssignLecturerModalVisible} onOk={handleAssignLecturerModalOk} onCancel={handleAssignLecturerModalCancel} width={1500}>
-				<Table dataSource={lecturerToReplaceList} columns={assignLecturerColumns} />
+			<Modal title="Assign Lecturer" visible={isAssignLecturerModalVisible} onOk={handleAssignLecturerModalOk}
+			       onCancel={handleAssignLecturerModalCancel} width={1500}>
+				<Table dataSource={lecturerToReplaceList} columns={assignLecturerColumns}/>
+			</Modal>
+
+			<Modal title="Attachment" visible={viewAttachmentModal} onOk={() => setViewAttachmentModal(false)}
+			       onCancel={() => setViewAttachmentModal(false)}>
+				{
+					selectedImage == "" ? (
+						<h2>No Attachment</h2>
+					) : (
+						<Image
+							width={200}
+							src={selectedImage}
+						/>
+					)
+				}
 			</Modal>
 		</>
 	);

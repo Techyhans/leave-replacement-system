@@ -58,16 +58,16 @@ export const Login = () => {
 
 				<br />
 				<br />
+				<h3>Email</h3>
 				<Form.Item
-					label="Username"
 					name="username"
-					rules={[{required: true, message: 'Please input your username!'}]}
+					rules={[{required: true, message: 'Please input your email!'}]}
 				>
 					<Input/>
 				</Form.Item>
 
+				<h3>Password</h3>
 				<Form.Item
-					label="Password"
 					name="password"
 					rules={[{required: true, message: 'Please input your password!'}]}
 				>

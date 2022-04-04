@@ -1,12 +1,14 @@
-import {Button, DatePicker, Form, Input, notification, Select, Spin, Table} from "antd";
+import {Button, DatePicker, Form, Image, Input, notification, Select, Spin, Table, Upload} from "antd";
 import {useEffect, useState} from "react";
 import Modal from "antd/es/modal/Modal";
 import {momentLocalizer} from "react-big-calendar";
 import moment from "moment";
 import axios from "axios";
+import {getBase64} from "../../../utils";
 
 export const UserLeavePage = () => {
 
+	const [imageId, setImageId] = useState("")
 	const [loading, setLoading] = useState(false);
 	const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 	const [dataSource, setDataSource] = useState([]);
@@ -37,6 +39,7 @@ export const UserLeavePage = () => {
 		setLoading(true);
 		values.date = values.date.format('YYYY-MM-DD');
 		values.approved = false;
+		values.file_base64 = imageId;
 
 		axios
 			.post('/api/leaves/', values, {
@@ -127,6 +130,44 @@ export const UserLeavePage = () => {
 						rules={[{required: true, message: 'Description is required'}]}
 					>
 						<Input />
+					</Form.Item>
+
+					<Form.Item
+						label={"file upload"}
+						rules={[{required: true, message: 'file is required'}]}
+					>
+						<Upload
+							accept="image/png, image/jpeg"
+							maxCount={1}
+							// listType="picture-card"
+							showUploadList={false}
+							customRequest={(file) => {
+								console.log(file)
+								const isLt2M = file.file.size / 1024 / 1024 / 1024 < 500;
+								if (isLt2M) {
+									getBase64(file.file).then((base64String) => {
+										setImageId(base64String)
+									});
+								} else {
+									notification["error"]({
+										message: 'Error',
+										description:
+											'Image size should not be greater than 500kb size',
+									});
+								}
+
+							}} // to override the component sending request on image upload, see https://stackoverflow.com/a/51519603/4858751
+							beforeUpload={() => console.log("before upload")} // see https://ant.design/components/upload/#components-upload-demo-avatar
+							onChange={() => console.log("handle change")} // see https://ant.design/components/upload/#components-upload-demo-avatar
+						>
+							{imageId !== "" ? (
+								<Image
+									preview={false}
+									width={200}
+									src={imageId}
+								/>
+							) : <Button block type="primary" className="login-form-button">Upload Attachment</Button>}
+						</Upload>
 					</Form.Item>
 
 					{

@@ -78,3 +78,12 @@ export const generate_recurrent_date = (start_datetime = null, end_datetime = nu
 
 	return events
 }
+
+export const getBase64 = (file) => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = error => reject(error);
+	});
+}
