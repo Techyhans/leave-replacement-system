@@ -16,6 +16,7 @@ export const UserPage = () => {
 	const [selectedUserId, setSelectedUserId] = useState();
 	const [userList, setUserList] = useState([]);
 	const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+	const [isDeleteUserModalVisible, setIsDeleteUserModalVisible] = useState(false);
 	const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 	const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 	const [selectedUser, setSelectedUser] = useState({});
@@ -128,6 +129,10 @@ export const UserPage = () => {
 							setIsDeleteRosterVisible(true)
 						}
 					}>Delete Roster</a>
+					<a onClick={() => {
+						setSelectedUser(rowData);
+						setIsDeleteUserModalVisible(true)
+					}}>Delete User</a>
 				</Space>
 			),
 		},
@@ -424,29 +429,21 @@ export const UserPage = () => {
 		},
 	];
 
-	const assignRosterData = [
-		{
-			key: '1',
-			name: 'John Brown',
-			age: 32,
-			address: 'New York No. 1 Lake Park',
-			tags: ['nice', 'developer'],
-		},
-		{
-			key: '2',
-			name: 'Jim Green',
-			age: 42,
-			address: 'London No. 1 Lake Park',
-			tags: ['loser'],
-		},
-		{
-			key: '3',
-			name: 'Joe Black',
-			age: 32,
-			address: 'Sidney No. 1 Lake Park',
-			tags: ['cool', 'teacher'],
-		},
-	];
+	const onDeleteUser = () => {
+		axios.delete("/api/users/" + selectedUser.id, {
+			headers: {
+				Authorization: 'Bearer ' + localStorage.getItem('token'),
+			}
+		}).finally(() => {
+			setIsDeleteUserModalVisible(false)
+			getUserList()
+			notification["success"]({
+				message: 'Success',
+				description:
+					'User Deleted Successfully',
+			});
+		})
+	}
 
 	const onAssignRosterFinish = (values) => {
 		setLoading(true)
@@ -893,6 +890,10 @@ export const UserPage = () => {
 
 			<Modal title="Delete Roster" visible={isDeleteRosterVisible} onOk={handleDeleteRosterOk} onCancel={handleDeleteRosterCancel} width={1500}>
 				<Table dataSource={selectedRosterDetails} columns={deleteRosterColumns} />
+			</Modal>
+
+			<Modal title="Delete User" visible={isDeleteUserModalVisible} onOk={onDeleteUser} onCancel={() => setIsDeleteUserModalVisible()} width={1500}>
+				<p>Are you sure want to delete this user?</p>
 			</Modal>
 		</>
 	)
