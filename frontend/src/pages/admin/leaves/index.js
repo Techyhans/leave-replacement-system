@@ -34,12 +34,14 @@ export const LeavePage = () => {
 		}).then(res => {
 			const response = res.data
 			setLecturerToReplaceList(response.map(lecturerDetails => {
-				return {
-					user_id: lecturerDetails.user.id,
-					full_name: lecturerDetails.user.full_name,
-					email: lecturerDetails.user.email,
-					gender: lecturerDetails.user.gender,
-					score: parseFloat(lecturerDetails.score).toFixed(2)
+				if (!localStorage.getItem("email") === lecturerDetails.user.email) {
+					return {
+						user_id: lecturerDetails.user.id,
+						full_name: lecturerDetails.user.full_name,
+						email: lecturerDetails.user.email,
+						gender: lecturerDetails.user.gender,
+						score: parseFloat(lecturerDetails.score).toFixed(2)
+					}
 				}
 			}));
 			setIsAssignLecturerModalVisible(true)

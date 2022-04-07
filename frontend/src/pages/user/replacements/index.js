@@ -31,6 +31,11 @@ export const UserReplacementPage = () => {
             dataIndex: 'subject_name',
             key: 'subject_name',
         },
+        {
+            title: 'Class',
+            dataIndex: 'cls',
+            key: 'cls',
+        },
     ];
 
     useEffect(() => {
@@ -46,7 +51,8 @@ export const UserReplacementPage = () => {
                     start_hour: data.roster.start_hour,
                     end_hour: data.roster.end_hour,
                     subject_code: data.roster.subject.code,
-                    subject_name: data.roster.subject.name
+                    subject_name: data.roster.subject.name,
+                    cls: data.roster.cls
                 }
             }));
         })

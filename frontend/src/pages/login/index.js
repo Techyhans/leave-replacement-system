@@ -22,9 +22,9 @@ export const Login = () => {
 				alert("invalid credentials")
 			} else {
 				response.json().then((data) => {
-					console.log("TOKEN", data)
 					localStorage.setItem('token', data.access_token);
 					localStorage.setItem('is_admin', values.username === "admin@example.com" ? true : false);
+					localStorage.setItem('email', values.username);
 					if (values.username === "admin@example.com") {
 						navigate('/admin/users')
 					} else {
